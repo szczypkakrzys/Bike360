@@ -1,0 +1,57 @@
+﻿@page "/travelagency/customers/create"
+
+<div style="margin: auto">
+    <Title Level="2" Style="margin-left: 5%">Nowy klient</Title>
+@if (string.IsNullOrEmpty(Message) == false)
+{
+    <div class="alert alert-danger">
+        @Message
+    </div>
+}
+
+<Form Model="@Model"
+      LabelCol="new ColLayoutParam { Span = 5 }"
+      WrapperCol="new ColLayoutParam { Span = 5 }"
+      OnFinish="CreateCustomer"
+    ValidateOnChange = "true">
+    <FormItem Label="Imię">
+        <Input @bind-Value="@Model.FirstName" />
+    </FormItem>
+    <FormItem Label="Nazwisko">
+        <Input @bind-Value="@Model.LastName" />
+    </FormItem>
+    <FormItem Label="Adres e-mail">
+        <Input @bind-Value="@Model.EmailAddress" />
+    </FormItem>
+    <FormItem Label="Data urodzenia">
+            <DatePicker Size="large" Format="dd/MM/yyyy" Mask="dd/MM/yyyy" Placeholder="@("dd/mm/yyyy")" Class="form-control" DefaultValue="DateTime.Today" @bind-Value="@Model.DateOfBirth" />
+    </FormItem>
+    <FormItem Label="Numer telefonu">
+        <Input @bind-Value="@Model.PhoneNumber" />
+    </FormItem>
+    <FormItem Label="Kraj">
+        <Input @bind-Value="@Model.Address.Country" />
+    </FormItem>
+    <FormItem Label="Województwo">
+        <Input @bind-Value="@Model.Address.Voivodeship" />
+    </FormItem>
+    <FormItem Label="Kod pocztowy">
+        <Input @bind-Value="@Model.Address.PostalCode" />
+    </FormItem>
+    <FormItem Label="Miasto">
+        <Input @bind-Value="@Model.Address.City" />
+    </FormItem>
+    <FormItem Label="Ulica">
+        <Input @bind-Value="@Model.Address.Street" />
+    </FormItem>
+    <FormItem Label="Number budynku/mieszkania">
+        <Input @bind-Value="@Model.Address.HouseNumber" />
+    </FormItem>
+   
+    <FormItem WrapperCol="new ColLayoutParam{ Offset = 5, Span = 16 }">
+        <Button Type="@ButtonType.Primary" HtmlType="submit">
+            Dodaj klienta
+        </Button>
+    </FormItem>
+</Form>
+</div>

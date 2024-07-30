@@ -1,0 +1,51 @@
+﻿@page "/travelagency/customers/details/{id:int}"
+
+<div style="margin: auto; width: 60%">
+
+    <Title Level="2">Dane klienta</Title>
+
+@if (string.IsNullOrEmpty(Message) == false)
+{
+    <div class="alert alert-danger">
+        @Message
+    </div>
+}
+
+@if (customer == null || customer.Address == null)
+{
+    <p>Ładowanie danych...</p>
+}
+else
+{
+        <Descriptions Bordered Layout="@DescriptionsLayout.Horizontal">
+            <DescriptionsItem LabelStyle="width: 30%" Span="3" Title="Imię">@customer.FirstName</DescriptionsItem>
+            <DescriptionsItem Span="3" Title="Nazwisko">@customer.LastName</DescriptionsItem>
+            <DescriptionsItem Span="3" Title="Adres e-mail">@customer.EmailAddress</DescriptionsItem>
+            <DescriptionsItem Span="3" Title="Numer telefonu">@customer.PhoneNumber</DescriptionsItem>
+            <DescriptionsItem Span="3" Title="Data urodzin">@customer.DateOfBirth.ToShortDateString()</DescriptionsItem>
+            <DescriptionsItem Title="Adres">
+                @customer.Address.Country
+                <br />
+                woj. @customer.Address.Voivodeship
+                <br />
+                @customer.Address.PostalCode @customer.Address.City
+                <br />
+                ul. @customer.Address.Street  @customer.Address.HouseNumber
+                <br />
+            </DescriptionsItem>
+         </Descriptions>
+
+        <div style="margin-top: 2%">
+            <Button Type="@ButtonType.Primary" Size="@ButtonSize.Large" OnClick="@(()=>EditCustomer(customer.Id))">
+                Edytuj
+            </Button>
+
+            <Popconfirm Placement="@Placement.Top" Title="Czy na pewno chcesz usunąć dane tego klienta?" CancelText="Anuluj" OkText="Tak, usuń" OnConfirm="@(() => DeleteCustomer(customer.Id))">
+                <Button Danger Type="@ButtonType.Primary" Size="@ButtonSize.Large">
+                     Usuń
+                 </Button>
+             </Popconfirm>
+         </div>
+}
+</div>
+

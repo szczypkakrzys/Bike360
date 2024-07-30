@@ -1,0 +1,108 @@
+﻿@page "/users/"
+
+<h3>@pageName</h3>
+
+@if (string.IsNullOrEmpty(Message) == false)
+{
+    <div class="alert alert-danger">
+        @Message
+    </div>
+}
+@if (Employees == null)
+{
+    <p>Ładowanie danych...</p>
+}
+else
+{
+    <GridRow>
+        <GridCol Span="8">
+            <Search Placeholder="Wyszukaj" ClassicSearchIcon @bind-Value="SearchText" BindOnInput="true" Size="large" />
+         </GridCol>
+         <GridCol Span="8">
+             <Button Type="@ButtonType.Primary" Size="@ButtonSize.Large" OnClick="RegisterModal" Style="margin-left: 10%">
+                 Utwórz nowe konto
+             </Button>
+         </GridCol>
+     </GridRow>
+
+
+    <table class="table" style="margin-top: 10px">
+        <thead>
+            <tr>
+                <th>
+                    Imię
+                </th>
+                <th>
+                    Nazwisko
+                </th>
+                <th>
+                    E-mail
+                </th>
+                <th>
+                    Akcje
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var employee in FilteredEmployees)
+            {
+                <tr>
+                    <td>@employee.FirstName</td>
+                    <td>@employee.LastName</td>
+                    <td>@employee.Email</td>
+                    <td>
+                        <Button Type="@ButtonType.Default" Size="@ButtonSize.Large" OnClick="@(() => UpdateEmailModal(employee.Id))" Style="margin-right: 2%">
+                            Edytuj e-mail
+                        </Button>
+                        <Popconfirm Placement="@Placement.Top" Title="Czy na pewno chcesz usunąć konto tego użytkownika?" CancelText="Anuluj" OkText="Tak, usuń" OnConfirm="@(() => Delete(employee.Id))">
+                            <Button Danger Type="@ButtonType.Text" Size="@ButtonSize.Large">
+                                Usuń konto
+                            </Button>
+                         </Popconfirm>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+}
+
+<Modal @bind-Visible="@updateEmailModalVisible"
+       Resizable="@false"
+       OkText="@("Zmień")"
+       CancelText="@("Anuluj")"
+       OnOk="@(() => UpdateEmail())">
+        Podaj nowy e-mail <Input Placeholder="Nowy adres e-mail" AllowClear="true" TValue="string" @bind-Value="@newEmail"/>
+</Modal>
+
+<Modal Title="@registerModalName"
+       @bind-Visible="@registerModalVisible"
+       Resizable="@false"
+       OkText="@("Utwórz")"
+       CancelText="@("Anuluj")"
+        OnOk="HandleOk">
+
+    <Form Model="@EmployeeToCreate"
+          LabelColSpan="8"
+          WrapperColSpan="16"
+          OnFinish="Register"
+          ValidateOnChange="true"
+          @ref="@_form">
+
+        <FormItem Label="Imię">
+            <Input @bind-Value="@EmployeeToCreate.FirstName" />
+        </FormItem>
+         <FormItem Label="Nazwisko">
+            <Input @bind-Value="@EmployeeToCreate.LastName" />
+        </FormItem>
+        <FormItem Label="E-mail">
+            <Input @bind-Value="@EmployeeToCreate.EmailAddress" />
+        </FormItem>
+        <FormItem Label="Hasło">
+            <InputPassword @bind-Value="@EmployeeToCreate.Password" />
+        </FormItem>
+
+    </Form>
+
+</Modal>
