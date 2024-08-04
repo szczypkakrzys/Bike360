@@ -1,6 +1,6 @@
-﻿namespace Bike360.Domain;
+﻿namespace Bike360.Application.Features.Customers.Commands.CreateCustomer;
 
-public class Address : BaseEntity
+public class CreateAddressDto
 {
     public string Country { get; set; }
     public string Voivodeship { get; set; }
@@ -8,5 +8,4 @@ public class Address : BaseEntity
     public string City { get; set; } = string.Empty;
     public string Street { get; set; } = string.Empty;
     public string HouseNumber { get; set; }
-    public Customer? Customer { get; set; }
 }

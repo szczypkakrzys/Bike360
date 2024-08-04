@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bike360.UI", "src\UI\Bike36
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bike360.Application.UnitTests", "tests\Bike360.Application.UnitTests\Bike360.Application.UnitTests.csproj", "{5F2AAF19-EAF4-417E-8C6B-82C380858209}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bike360", "src\API\Bike360.Api\Bike360.csproj", "{2210B0A4-E53F-4EDA-82D5-195498493EFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bike360.Api", "src\API\Bike360.Api\Bike360.Api.csproj", "{2210B0A4-E53F-4EDA-82D5-195498493EFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

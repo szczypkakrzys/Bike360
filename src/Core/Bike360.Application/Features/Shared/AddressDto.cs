@@ -2,6 +2,7 @@
 
 public class AddressDto
 {
+    //don't need to keep it in shared - can be moved I think do separate
     public int Id { get; set; }
     public string Country { get; set; }
     public string Voivodeship { get; set; }

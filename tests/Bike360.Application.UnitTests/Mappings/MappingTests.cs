@@ -1,16 +1,11 @@
 ﻿using AutoMapper;
-using CustomersManagement.Application.Features.Shared;
-using CustomersManagement.Application.Features.Tours.Commands.CreateTour;
-using CustomersManagement.Application.Features.Tours.Commands.UpdateTour;
-using CustomersManagement.Application.Features.Tours.Queries.GetAllTours;
-using CustomersManagement.Application.Features.Tours.Queries.GetTourDetails;
-using CustomersManagement.Application.Features.TravelAgencyCustomers.Commands.CreateTravelAgencyCustomer;
-using CustomersManagement.Application.Features.TravelAgencyCustomers.Commands.UpdateTravelAgencyCustomer;
-using CustomersManagement.Application.Features.TravelAgencyCustomers.Queries.GetAllTravelAgencyCustomers;
-using CustomersManagement.Application.Features.TravelAgencyCustomers.Queries.GetTravelAgencyCustomerDetails;
-using CustomersManagement.Application.MappingProfiles;
-using CustomersManagement.Domain;
-using CustomersManagement.Domain.TravelAgency;
+using Bike360.Application.Features.Customers.Commands.CreateCustomer;
+using Bike360.Application.Features.DivingSchoolCustomers.Commands.CreateDivingSchoolCustomer;
+using Bike360.Application.Features.DivingSchoolCustomers.Commands.UpdateDivingSchoolCustomer;
+using Bike360.Application.Features.DivingSchoolCustomers.Queries.GetAllDivingSchoolCustomers;
+using Bike360.Application.Features.DivingSchoolCustomers.Queries.GetDivingSchoolCustomerDetails;
+using Bike360.Application.MappingProfiles;
+using Bike360.Domain;
 using System.Runtime.CompilerServices;
 
 namespace CustomersManagement.Application.UnitTests.Mappings;
@@ -24,8 +19,7 @@ public class MappingTests
     {
         _configuration = new MapperConfiguration(cfg =>
         {
-            cfg.AddProfile<TravelAgencyCustomerProfile>();
-            cfg.AddProfile<TourProfile>();
+            cfg.AddProfile<CustomerProfile>();
         });
 
         _mapper = _configuration.CreateMapper();
@@ -38,19 +32,13 @@ public class MappingTests
     }
 
     [Theory]
-    [InlineData(typeof(TravelAgencyCustomer), typeof(TravelAgencyCustomerDto))]
-    [InlineData(typeof(TravelAgencyCustomer), typeof(TravelAgencyCustomerDetailsDto))]
-    [InlineData(typeof(CreateTravelAgencyCustomerCommand), typeof(TravelAgencyCustomer))]
-    [InlineData(typeof(UpdateTravelAgencyCustomerCommand), typeof(TravelAgencyCustomer))]
+    [InlineData(typeof(Customer), typeof(CustomerDto))]
+    [InlineData(typeof(Customer), typeof(CustomerDetailsDto))]
+    [InlineData(typeof(CreateCustomerCommand), typeof(Customer))]
+    [InlineData(typeof(UpdateCustomerCommand), typeof(Customer))]
     [InlineData(typeof(DateTime), typeof(DateOnly))]
-    [InlineData(typeof(Address), typeof(AddressDto))]
-    [InlineData(typeof(AddressDto), typeof(Address))]
     [InlineData(typeof(CreateAddressDto), typeof(Address))]
 
-    [InlineData(typeof(CreateTourCommand), typeof(Tour))]
-    [InlineData(typeof(UpdateTourCommand), typeof(Tour))]
-    [InlineData(typeof(Tour), typeof(TourDto))]
-    [InlineData(typeof(Tour), typeof(TourDetailsDto))]
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {
         var instance = GetInstanceOf(source);

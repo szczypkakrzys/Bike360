@@ -1,4 +1,4 @@
-﻿using Bike360.Domain.Common;
+﻿using Bike360.Domain;
 
 namespace Bike360.Application.Contracts.Persistence;
 

@@ -1,5 +1,5 @@
 ﻿using Bike360.Application.Contracts.Persistence;
-using Bike360.Domain.Common;
+using Bike360.Domain;
 using Bike360.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,9 +7,9 @@ namespace Bike360.Persistence.Repositories;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 {
-    protected readonly CustomerDatabaseContext _context;
+    protected readonly WorkshopDatabaseContext _context;
 
-    public GenericRepository(CustomerDatabaseContext context)
+    public GenericRepository(WorkshopDatabaseContext context)
     {
         _context = context;
     }
