@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bike360.Application.UnitTes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bike360.Api", "src\API\Bike360.Api\Bike360.Api.csproj", "{2210B0A4-E53F-4EDA-82D5-195498493EFD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bike360.IntegrationTests", "Bike360.IntegrationTests\Bike360.IntegrationTests.csproj", "{D0DDB901-513A-4246-AEA6-9A19BE88BAF3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{2210B0A4-E53F-4EDA-82D5-195498493EFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2210B0A4-E53F-4EDA-82D5-195498493EFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2210B0A4-E53F-4EDA-82D5-195498493EFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0DDB901-513A-4246-AEA6-9A19BE88BAF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0DDB901-513A-4246-AEA6-9A19BE88BAF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0DDB901-513A-4246-AEA6-9A19BE88BAF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0DDB901-513A-4246-AEA6-9A19BE88BAF3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,6 +85,7 @@ Global
 		{53839A39-C4C2-494D-9A34-89E67CA4EC90} = {3B7567B4-D381-405B-8EF1-9FC6EB50866A}
 		{5F2AAF19-EAF4-417E-8C6B-82C380858209} = {09FFD466-EA24-4759-B68C-D8EC3463C635}
 		{2210B0A4-E53F-4EDA-82D5-195498493EFD} = {8AF63D6B-BDF1-4F3E-B67B-493FE115EF9D}
+		{D0DDB901-513A-4246-AEA6-9A19BE88BAF3} = {09FFD466-EA24-4759-B68C-D8EC3463C635}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {55C80F48-B704-4733-B17A-09DB7A20050B}
