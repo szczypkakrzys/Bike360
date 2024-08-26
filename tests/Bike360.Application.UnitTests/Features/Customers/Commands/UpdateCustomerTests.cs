@@ -9,7 +9,7 @@ using FluentValidation.TestHelper;
 using MediatR;
 using NSubstitute;
 
-namespace CustomersManagement.Application.UnitTests.Features.Customers.Commands;
+namespace Bike360.Application.UnitTests.Features.Customers.Commands;
 
 public class UpdateCustomerTests
 {
@@ -71,8 +71,6 @@ public class UpdateCustomerTests
             DateOfBirth = DateTime.UtcNow,
             Address = new AddressDto()
         };
-
-        var customerToUpdate = new Customer();
 
         _customerRepository.GetByIdAsync(customerId).Returns(default(Customer));
 

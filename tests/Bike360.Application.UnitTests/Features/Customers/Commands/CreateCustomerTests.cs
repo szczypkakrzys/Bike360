@@ -9,7 +9,7 @@ using FluentValidation;
 using FluentValidation.TestHelper;
 using NSubstitute;
 
-namespace CustomersManagement.Application.UnitTests.Features.Customers.Commands;
+namespace Bike360.Application.UnitTests.Features.Customers.Commands;
 
 public class CreateCustomerTests
 {

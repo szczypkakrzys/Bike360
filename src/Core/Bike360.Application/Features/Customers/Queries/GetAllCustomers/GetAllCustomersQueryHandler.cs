@@ -21,9 +21,9 @@ public class GetAllCustomersQueryHandler : IRequestHandler<GetAllCustomersQuery,
         GetAllCustomersQuery request,
         CancellationToken cancellationToken)
     {
-        var customer = await _customerRepository.GetAsync();
+        var customers = await _customerRepository.GetAsync();
 
-        var data = _mapper.Map<IEnumerable<CustomerDto>>(customer);
+        var data = _mapper.Map<IEnumerable<CustomerDto>>(customers);
 
         return data;
     }

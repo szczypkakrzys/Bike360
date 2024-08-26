@@ -12,6 +12,7 @@ public class WorkshopDatabaseContext : DbContext
 
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Address> Addresses { get; set; }
+    public DbSet<Bike> Bikes { get; set; }
 
     //public DbSet<DivingCourse> DivingCourses { get; set; }
     //public DbSet<CustomersDivingCoursesRelations> CustomersDivingCoursesRelations { get; set; }
@@ -25,6 +26,12 @@ public class WorkshopDatabaseContext : DbContext
             .HasOne(e => e.Customer)
             .WithOne(e => e.Address)
             .HasForeignKey<Customer>(e => e.AddressId)
+            .IsRequired();
+
+        modelBuilder.Entity<Customer>()
+            .HasMany(e => e.Bikes)
+            .WithOne(e => e.Customer)
+            .HasForeignKey(e => e.CustomerId)
             .IsRequired();
 
         //modelBuilder.Entity<DivingCourse>()

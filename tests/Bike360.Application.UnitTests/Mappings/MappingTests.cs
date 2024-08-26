@@ -1,4 +1,8 @@
 ﻿using AutoMapper;
+using Bike360.Application.Features.Bikes.Commands.CreateBike;
+using Bike360.Application.Features.Bikes.Commands.UpdateBike;
+using Bike360.Application.Features.Bikes.Queries.GetAllBikes;
+using Bike360.Application.Features.Bikes.Queries.GetBikeDetails;
 using Bike360.Application.Features.Customers.Commands.CreateCustomer;
 using Bike360.Application.Features.DivingSchoolCustomers.Commands.CreateDivingSchoolCustomer;
 using Bike360.Application.Features.DivingSchoolCustomers.Commands.UpdateDivingSchoolCustomer;
@@ -8,7 +12,7 @@ using Bike360.Application.MappingProfiles;
 using Bike360.Domain;
 using System.Runtime.CompilerServices;
 
-namespace CustomersManagement.Application.UnitTests.Mappings;
+namespace Bike360.Application.UnitTests.Mappings;
 
 public class MappingTests
 {
@@ -20,6 +24,7 @@ public class MappingTests
         _configuration = new MapperConfiguration(cfg =>
         {
             cfg.AddProfile<CustomerProfile>();
+            cfg.AddProfile<BikeProfile>();
         });
 
         _mapper = _configuration.CreateMapper();
@@ -32,12 +37,20 @@ public class MappingTests
     }
 
     [Theory]
+    [InlineData(typeof(DateTime), typeof(DateOnly))]
+
+    // Customer
     [InlineData(typeof(Customer), typeof(CustomerDto))]
     [InlineData(typeof(Customer), typeof(CustomerDetailsDto))]
     [InlineData(typeof(CreateCustomerCommand), typeof(Customer))]
     [InlineData(typeof(UpdateCustomerCommand), typeof(Customer))]
-    [InlineData(typeof(DateTime), typeof(DateOnly))]
     [InlineData(typeof(CreateAddressDto), typeof(Address))]
+
+    // Bike
+    [InlineData(typeof(CreateBikeCommand), typeof(Bike))]
+    [InlineData(typeof(UpdateBikeCommand), typeof(Bike))]
+    [InlineData(typeof(Bike), typeof(BikeDto))]
+    [InlineData(typeof(Bike), typeof(BikeDetailsDto))]
 
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {

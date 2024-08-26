@@ -6,7 +6,7 @@ using Bike360.Domain;
 using FluentAssertions;
 using NSubstitute;
 
-namespace CustomersManagement.Application.UnitTests.Features.Customers.Queries;
+namespace Bike360.Application.UnitTests.Features.Customers.Queries;
 
 public class GetCustomerDetailsTests
 {
