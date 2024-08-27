@@ -7,9 +7,9 @@ namespace Bike360.Persistence.Repositories;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 {
-    protected readonly WorkshopDatabaseContext _context;
+    protected readonly Bike360DatabaseContext _context;
 
-    public GenericRepository(WorkshopDatabaseContext context)
+    public GenericRepository(Bike360DatabaseContext context)
     {
         _context = context;
     }

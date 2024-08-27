@@ -32,14 +32,15 @@ public class GetAllBikesTests
             {
                 Id = 1,
                 Brand = "Brand 1",
-                Name = "Name 1",
-                FrameNumber = "0123456789"
+                Type = "Road",
+                Model = "Model 1",
             },
             new()
             {
                 Id = 2,
                 Brand = "Brand 2",
-                Name = "Name 2"
+                 Type = "Road",
+                Model = "Model 2"
             }
         };
 

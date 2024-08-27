@@ -6,7 +6,7 @@ namespace Bike360.Persistence.Repositories;
 
 public class BikeRepository : GenericRepository<Bike>, IBikeRepository
 {
-    public BikeRepository(WorkshopDatabaseContext context) : base(context)
+    public BikeRepository(Bike360DatabaseContext context) : base(context)
     {
     }
 }

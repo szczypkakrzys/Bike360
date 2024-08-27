@@ -14,13 +14,27 @@ public class UpdateBikeCommandValidator : AbstractValidator<UpdateBikeCommand>
                       .WithMessage("{PropertyName} is required")
                   .MustAsync(BikeMustExist)
                       .WithMessage("Couldn't find bike with Id = {PropertyValue}");
+
         RuleFor(p => p.Brand)
            .NotEmpty()
                .WithMessage("{PropertyName} is required");
 
-        RuleFor(p => p.Name)
+
+        RuleFor(p => p.Type)
             .NotEmpty()
                 .WithMessage("{PropertyName} is required");
+
+        RuleFor(p => p.Model)
+           .NotEmpty()
+               .WithMessage("{PropertyName} is required");
+
+        RuleFor(p => p.Size)
+           .NotEmpty()
+               .WithMessage("{PropertyName} is required");
+
+        RuleFor(p => p.Color)
+           .NotEmpty()
+               .WithMessage("{PropertyName} is required");
 
         _bikeRepository = bikeRepository;
     }

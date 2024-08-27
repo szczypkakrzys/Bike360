@@ -7,10 +7,12 @@ namespace Bike360.Persistence.Repositories;
 
 public class CustomerRepository : GenericRepository<Customer>, ICustomerRepository
 {
-    public CustomerRepository(WorkshopDatabaseContext context) : base(context)
+    public CustomerRepository(Bike360DatabaseContext context) : base(context)
     {
     }
 
+    //TODO
+    //or just check if e-mail is unique :)
     public async Task<bool> IsCustomerUnique(
          string firstName,
          string lastName,

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Bike360.Persistence.Migrations
 {
-    [DbContext(typeof(WorkshopDatabaseContext))]
+    [DbContext(typeof(Bike360DatabaseContext))]
     [Migration("20240804161043_addCustomersEntity")]
     partial class addCustomersEntity
     {

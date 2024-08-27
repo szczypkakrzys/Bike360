@@ -19,11 +19,9 @@ public class CustomerProfile : Profile
         CreateMap<CreateCustomerCommand, Customer>()
             .ForMember(dest => dest.AddressId, opt => opt.Ignore())
             .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.Bikes, opt => opt.Ignore())
             .ForMember(dest => dest.TimeCreatedInUtc, opt => opt.Ignore())
             .ForMember(dest => dest.TimeLastModifiedInUtc, opt => opt.Ignore());
         CreateMap<UpdateCustomerCommand, Customer>()
-            .ForMember(dest => dest.Bikes, opt => opt.Ignore())
             .ForMember(dest => dest.TimeCreatedInUtc, opt => opt.Ignore())
             .ForMember(dest => dest.TimeLastModifiedInUtc, opt => opt.Ignore());
         CreateMap<CreateAddressDto, Address>()

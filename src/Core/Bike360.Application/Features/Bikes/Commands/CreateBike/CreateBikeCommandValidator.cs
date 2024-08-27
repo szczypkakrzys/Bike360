@@ -10,8 +10,20 @@ public class CreateBikeCommandValidator : AbstractValidator<CreateBikeCommand>
             .NotEmpty()
                 .WithMessage("{PropertyName} is required");
 
-        RuleFor(p => p.Name)
+        RuleFor(p => p.Type)
             .NotEmpty()
                 .WithMessage("{PropertyName} is required");
+
+        RuleFor(p => p.Model)
+           .NotEmpty()
+               .WithMessage("{PropertyName} is required");
+
+        RuleFor(p => p.Size)
+           .NotEmpty()
+               .WithMessage("{PropertyName} is required");
+
+        RuleFor(p => p.Color)
+           .NotEmpty()
+               .WithMessage("{PropertyName} is required");
     }
 }

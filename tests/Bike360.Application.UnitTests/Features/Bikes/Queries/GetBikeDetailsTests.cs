@@ -30,9 +30,13 @@ public class GetBikeDetailsTests
         var bikeDetailsDto = new BikeDetailsDto
         {
             Id = 1,
-            Brand = "Brand",
-            Name = "Name",
-            FrameNumber = "0123456789"
+            Brand = "Brand 1",
+            Type = "Road",
+            Model = "Model 1",
+            Size = "XL",
+            Color = "Monte Carlo Blue Metallic",
+            FrameNumber = "0123456789",
+            Description = "Some bike description"
         };
         var request = new GetBikeDetailsQuery(bikeId);
 

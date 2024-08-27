@@ -9,5 +9,4 @@ public class Customer : BaseEntity
     public DateOnly DateOfBirth { get; set; }
     public string EmailAddress { get; set; }
     public string PhoneNumber { get; set; }
-    public ICollection<Bike> Bikes { get; } = new List<Bike>();
 }

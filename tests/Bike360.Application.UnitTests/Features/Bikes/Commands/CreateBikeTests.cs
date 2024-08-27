@@ -34,7 +34,10 @@ public class CreateBikeTests
         var request = new CreateBikeCommand
         {
             Brand = "AnyBrand",
-            Name = "AnyName",
+            Type = "Gravel",
+            Model = "AnyModel",
+            Size = "XL",
+            Color = "Goodwood Green",
             FrameNumber = "0123456789"
         };
 
@@ -66,8 +69,15 @@ public class CreateBikeTests
 
         result.ShouldHaveValidationErrorFor(request => request.Brand)
             .WithErrorMessage("Brand is required");
-        result.ShouldHaveValidationErrorFor(request => request.Name)
-           .WithErrorMessage("Name is required");
+        result.ShouldHaveValidationErrorFor(request => request.Type)
+           .WithErrorMessage("Type is required");
+        result.ShouldHaveValidationErrorFor(request => request.Model)
+          .WithErrorMessage("Model is required");
+        result.ShouldHaveValidationErrorFor(request => request.Size)
+          .WithErrorMessage("Size is required");
+        result.ShouldHaveValidationErrorFor(request => request.Color)
+          .WithErrorMessage("Color is required");
         result.ShouldNotHaveValidationErrorFor(request => request.FrameNumber);
+        result.ShouldNotHaveValidationErrorFor(request => request.Description);
     }
 }

@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bike360.Persistence.DatabaseContext;
 
-public class WorkshopDatabaseContext : DbContext
+public class Bike360DatabaseContext : DbContext
 {
-    public WorkshopDatabaseContext(
-        DbContextOptions<WorkshopDatabaseContext> options) : base(options)
+    public Bike360DatabaseContext(
+        DbContextOptions<Bike360DatabaseContext> options) : base(options)
     {
     }
 
@@ -19,31 +19,16 @@ public class WorkshopDatabaseContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(WorkshopDatabaseContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(Bike360DatabaseContext).Assembly);
         base.OnModelCreating(modelBuilder);
+
+        //TODO - adjust for new business
 
         modelBuilder.Entity<Address>()
             .HasOne(e => e.Customer)
             .WithOne(e => e.Address)
             .HasForeignKey<Customer>(e => e.AddressId)
             .IsRequired();
-
-        modelBuilder.Entity<Customer>()
-            .HasMany(e => e.Bikes)
-            .WithOne(e => e.Customer)
-            .HasForeignKey(e => e.CustomerId)
-            .IsRequired();
-
-        //modelBuilder.Entity<DivingCourse>()
-        //    .HasMany(e => e.Participants)
-        //    .WithMany(e => e.DivingCourses)
-        //    .UsingEntity<CustomersDivingCoursesRelations>(
-        //        l => l.HasOne(e => e.Customer)
-        //                .WithMany(e => e.DivingCoursesRelations)
-        //                .HasForeignKey(e => e.CustomerId),
-        //        r => r.HasOne(e => e.DivingCourse)
-        //                .WithMany(e => e.DivingCourseRelations)
-        //                .HasForeignKey(e => e.DivingCourseId));
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

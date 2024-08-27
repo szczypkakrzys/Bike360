@@ -13,9 +13,9 @@ public static class PersistenceServiceRegistration
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddDbContext<WorkshopDatabaseContext>(options =>
+        services.AddDbContext<Bike360DatabaseContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("WorkshopManagementDatabase"));
+            options.UseSqlServer(configuration.GetConnectionString("Bike360Database"));
         });
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

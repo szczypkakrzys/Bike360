@@ -12,14 +12,10 @@ public class BikeProfile : Profile
     public BikeProfile()
     {
         CreateMap<CreateBikeCommand, Bike>()
-            .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(source => source.OwnerId))
             .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.Customer, opt => opt.Ignore())
             .ForMember(dest => dest.TimeCreatedInUtc, opt => opt.Ignore())
             .ForMember(dest => dest.TimeLastModifiedInUtc, opt => opt.Ignore());
         CreateMap<UpdateBikeCommand, Bike>()
-            .ForMember(dest => dest.CustomerId, opt => opt.Ignore())
-            .ForMember(dest => dest.Customer, opt => opt.Ignore())
             .ForMember(dest => dest.TimeCreatedInUtc, opt => opt.Ignore())
             .ForMember(dest => dest.TimeLastModifiedInUtc, opt => opt.Ignore());
         CreateMap<Bike, BikeDto>();
