@@ -37,6 +37,7 @@ public class CreateBikeTests
             Type = "Gravel",
             Model = "AnyModel",
             Size = "XL",
+            RentCostPerDay = 200,
             Color = "Goodwood Green",
             FrameNumber = "0123456789"
         };
@@ -77,7 +78,38 @@ public class CreateBikeTests
           .WithErrorMessage("Size is required");
         result.ShouldHaveValidationErrorFor(request => request.Color)
           .WithErrorMessage("Color is required");
+        result.ShouldHaveValidationErrorFor(request => request.RentCostPerDay)
+          .WithErrorMessage("Rent cost is required");
         result.ShouldNotHaveValidationErrorFor(request => request.FrameNumber);
         result.ShouldNotHaveValidationErrorFor(request => request.Description);
+    }
+
+    [Fact]
+    public async Task Validate_RentCostIsNegativeValue_ThrowsBadRequestExceptionAndShouldHaveValidationErrors()
+    {
+        // Arrange
+        var request = new CreateBikeCommand
+        {
+            Brand = "AnyBrand",
+            Type = "Gravel",
+            Model = "AnyModel",
+            Size = "XL",
+            RentCostPerDay = -200,
+            Color = "Goodwood Green",
+            FrameNumber = "0123456789"
+        };
+
+        // Act 
+        var result = await _validator.TestValidateAsync(request);
+        Func<Task> act = async () => await _handler.Handle(request, CancellationToken.None);
+
+        // Assert
+        await act.Should().ThrowAsync<BadRequestException>()
+           .WithMessage("Invalid Bike");
+
+        await _bikeRepository.DidNotReceive().CreateAsync(Arg.Any<Bike>());
+
+        result.ShouldHaveValidationErrorFor(request => request.RentCostPerDay)
+            .WithErrorMessage("Rent cost must be greater than 0");
     }
 }

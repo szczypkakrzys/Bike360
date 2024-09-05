@@ -36,6 +36,12 @@ public class UpdateBikeCommandValidator : AbstractValidator<UpdateBikeCommand>
            .NotEmpty()
                .WithMessage("{PropertyName} is required");
 
+        RuleFor(p => p.RentCostPerDay)
+            .NotEmpty()
+                .WithMessage("Rent cost is required")
+            .GreaterThan(0)
+                .WithMessage("Rent cost must be greater than 0");
+
         _bikeRepository = bikeRepository;
     }
 

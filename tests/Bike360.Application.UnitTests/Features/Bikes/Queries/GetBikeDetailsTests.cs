@@ -35,6 +35,7 @@ public class GetBikeDetailsTests
             Model = "Model 1",
             Size = "XL",
             Color = "Monte Carlo Blue Metallic",
+            RentCostPerDay = 200,
             FrameNumber = "0123456789",
             Description = "Some bike description"
         };

@@ -34,13 +34,15 @@ public class GetAllBikesTests
                 Brand = "Brand 1",
                 Type = "Road",
                 Model = "Model 1",
+                RentCostPerDay = 200
             },
             new()
             {
                 Id = 2,
                 Brand = "Brand 2",
-                 Type = "Road",
-                Model = "Model 2"
+                Type = "Road",
+                Model = "Model 2",
+                RentCostPerDay = 200
             }
         };
 

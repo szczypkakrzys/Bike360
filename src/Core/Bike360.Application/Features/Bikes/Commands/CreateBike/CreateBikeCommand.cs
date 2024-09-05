@@ -9,6 +9,7 @@ public class CreateBikeCommand : IRequest<int>
     public string Model { get; set; }
     public string Size { get; set; }
     public string Color { get; set; }
+    public double RentCostPerDay { get; set; }
     public string? FrameNumber { get; set; }
     public string? Description { get; set; }
 }

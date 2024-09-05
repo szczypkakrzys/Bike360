@@ -25,5 +25,11 @@ public class CreateBikeCommandValidator : AbstractValidator<CreateBikeCommand>
         RuleFor(p => p.Color)
            .NotEmpty()
                .WithMessage("{PropertyName} is required");
+
+        RuleFor(p => p.RentCostPerDay)
+            .NotEmpty()
+                .WithMessage("Rent cost is required")
+            .GreaterThan(0)
+                .WithMessage("Rent cost must be greater than 0");
     }
 }
