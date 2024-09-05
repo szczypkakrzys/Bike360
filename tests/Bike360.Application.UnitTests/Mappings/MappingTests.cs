@@ -8,6 +8,7 @@ using Bike360.Application.Features.DivingSchoolCustomers.Commands.CreateDivingSc
 using Bike360.Application.Features.DivingSchoolCustomers.Commands.UpdateDivingSchoolCustomer;
 using Bike360.Application.Features.DivingSchoolCustomers.Queries.GetAllDivingSchoolCustomers;
 using Bike360.Application.Features.DivingSchoolCustomers.Queries.GetDivingSchoolCustomerDetails;
+using Bike360.Application.Features.Reservations.Commands.CreateReservation;
 using Bike360.Application.MappingProfiles;
 using Bike360.Domain;
 using System.Runtime.CompilerServices;
@@ -25,6 +26,7 @@ public class MappingTests
         {
             cfg.AddProfile<CustomerProfile>();
             cfg.AddProfile<BikeProfile>();
+            cfg.AddProfile<ReservationProfile>();
         });
 
         _mapper = _configuration.CreateMapper();
@@ -51,6 +53,9 @@ public class MappingTests
     [InlineData(typeof(UpdateBikeCommand), typeof(Bike))]
     [InlineData(typeof(Bike), typeof(BikeDto))]
     [InlineData(typeof(Bike), typeof(BikeDetailsDto))]
+
+    // Reservation
+    [InlineData(typeof(CreateReservationCommand), typeof(Reservation))]
 
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {

@@ -13,9 +13,13 @@ public class BikeProfile : Profile
     {
         CreateMap<CreateBikeCommand, Bike>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Reservations, opt => opt.Ignore())
+            .ForMember(dest => dest.ReservationBikes, opt => opt.Ignore())
             .ForMember(dest => dest.TimeCreatedInUtc, opt => opt.Ignore())
             .ForMember(dest => dest.TimeLastModifiedInUtc, opt => opt.Ignore());
         CreateMap<UpdateBikeCommand, Bike>()
+            .ForMember(dest => dest.Reservations, opt => opt.Ignore())
+            .ForMember(dest => dest.ReservationBikes, opt => opt.Ignore())
             .ForMember(dest => dest.TimeCreatedInUtc, opt => opt.Ignore())
             .ForMember(dest => dest.TimeLastModifiedInUtc, opt => opt.Ignore());
         CreateMap<Bike, BikeDto>();

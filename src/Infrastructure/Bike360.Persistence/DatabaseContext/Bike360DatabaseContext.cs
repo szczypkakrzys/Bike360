@@ -13,22 +13,36 @@ public class Bike360DatabaseContext : DbContext
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Address> Addresses { get; set; }
     public DbSet<Bike> Bikes { get; set; }
-
-    //public DbSet<DivingCourse> DivingCourses { get; set; }
-    //public DbSet<CustomersDivingCoursesRelations> CustomersDivingCoursesRelations { get; set; }
+    public DbSet<Reservation> Reservations { get; set; }
+    public DbSet<ReservationBike> ReservationBikes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(Bike360DatabaseContext).Assembly);
         base.OnModelCreating(modelBuilder);
 
-        //TODO - adjust for new business
-
         modelBuilder.Entity<Address>()
             .HasOne(e => e.Customer)
             .WithOne(e => e.Address)
             .HasForeignKey<Customer>(e => e.AddressId)
             .IsRequired();
+
+        modelBuilder.Entity<Reservation>()
+            .HasOne(e => e.Customer)
+            .WithMany(e => e.Reservations)
+            .HasForeignKey(e => e.CustomerId)
+            .IsRequired();
+
+        modelBuilder.Entity<Reservation>()
+            .HasMany(e => e.Bikes)
+            .WithMany(e => e.Reservations)
+            .UsingEntity<ReservationBike>(
+                l => l.HasOne<Bike>()
+                        .WithMany(e => e.ReservationBikes)
+                        .HasForeignKey(e => e.BikeId),
+                r => r.HasOne<Reservation>()
+                        .WithMany(e => e.ReservationBikes)
+                        .HasForeignKey(e => e.ReservationId));
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

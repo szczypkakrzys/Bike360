@@ -19,10 +19,12 @@ public class CustomerProfile : Profile
         CreateMap<CreateCustomerCommand, Customer>()
             .ForMember(dest => dest.AddressId, opt => opt.Ignore())
             .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Reservations, opt => opt.Ignore())
             .ForMember(dest => dest.TimeCreatedInUtc, opt => opt.Ignore())
             .ForMember(dest => dest.TimeLastModifiedInUtc, opt => opt.Ignore());
         CreateMap<UpdateCustomerCommand, Customer>()
             .ForMember(dest => dest.TimeCreatedInUtc, opt => opt.Ignore())
+            .ForMember(dest => dest.Reservations, opt => opt.Ignore())
             .ForMember(dest => dest.TimeLastModifiedInUtc, opt => opt.Ignore());
         CreateMap<CreateAddressDto, Address>()
             .ForMember(dest => dest.Customer, opt => opt.Ignore())
@@ -30,6 +32,8 @@ public class CustomerProfile : Profile
             .ForMember(dest => dest.TimeCreatedInUtc, opt => opt.Ignore())
             .ForMember(dest => dest.TimeLastModifiedInUtc, opt => opt.Ignore());
         CreateMap<Address, AddressDto>().ReverseMap();
+        //TODO
+        // probably don't use it anymore
         CreateMap<DateTime, DateOnly>().ConvertUsing(new DateTimeToDateOnlyConverter());
     }
 }
