@@ -4,7 +4,7 @@ public class Reservation : BaseEntity
 {
     public DateTime DateTimeStart { get; set; }
     public DateTime DateTimeEnd { get; set; }
-    public int Cost { get; set; }
+    public double Cost { get; set; }
     public string Status { get; set; }
     public string? Comments { get; set; }
     public int CustomerId { get; set; }

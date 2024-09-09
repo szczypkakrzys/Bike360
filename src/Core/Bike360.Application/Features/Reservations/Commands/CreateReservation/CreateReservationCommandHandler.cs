@@ -39,9 +39,9 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
 
         var reservationBikesEntities = await _bikeRepository.GetByIdsAsync(request.BikesIds);
 
-        var reservationTimeEnd = request.DateTimeStart.AddDays(request.NumberOfDays);
+        var reservationTimeEnd = CalculateReservationTimeEnd(request.DateTimeStart, request.NumberOfDays);
 
-        ValidateBikesAvailability(
+        await ValidateBikesAvailability(
             reservationBikesEntities,
             request.BikesIds,
             request.DateTimeStart,
@@ -50,12 +50,16 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
         var reservationToCreate = CreateReservation(
             request,
             reservationBikesEntities,
-            customerData,
-            reservationTimeEnd);
+            customerData);
 
         await _reservationRepository.CreateAsync(reservationToCreate);
 
         return reservationToCreate.Id;
+    }
+
+    private static DateTime CalculateReservationTimeEnd(DateTime timeStart, int numberOfDays)
+    {
+        return timeStart.AddDays(numberOfDays);
     }
 
     private async Task ValidateCommand(
@@ -78,8 +82,7 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
     private Reservation CreateReservation(
         CreateReservationCommand request,
         IEnumerable<Bike> reservationBikesEntities,
-        Customer customer,
-        DateTime timeEnd)
+        Customer customer)
     {
         var reservation = _mapper.Map<Reservation>(request);
 
@@ -88,13 +91,14 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
             reservation.Bikes.Add(bike);
         }
 
-        reservation.DateTimeEnd = timeEnd;
+        reservation.DateTimeEnd = CalculateReservationTimeEnd(request.DateTimeStart, request.NumberOfDays);
         reservation.Customer = customer;
+        reservation.Cost = _reservationService.CalculateReservationCost(reservationBikesEntities, request.NumberOfDays);
 
         return reservation;
     }
 
-    private void ValidateBikesAvailability(
+    private async Task ValidateBikesAvailability(
         IEnumerable<Bike> bikesEntities,
         IEnumerable<int> bikesIds,
         DateTime timeStart,
@@ -103,7 +107,7 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
         if (bikesEntities.Count() != bikesIds.Count())
             ThrowBikesInconsistencyError(bikesEntities, bikesIds);
 
-        var bikesAvailability = _reservationService.CheckBikesAvailability(bikesIds, timeStart, timeEnd);
+        var bikesAvailability = await _reservationService.CheckBikesAvailability(bikesIds, timeStart, timeEnd);
 
         if (!bikesAvailability.AreAvailable)
             throw new BadRequestException(bikesAvailability.ErrorMessage);

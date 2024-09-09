@@ -1,28 +1,29 @@
 ﻿using Bike360.Application.Contracts.Persistence;
 using Bike360.Application.Features.Reservations.Results;
+using Bike360.Domain;
+using Bike360.Domain.Models;
 
 namespace Bike360.Application.Features.Reservations.Services;
 
 public class ReservationService : IReservationService
 {
     private readonly IReservationRepository _reservationRepository;
-    private readonly IBikeRepository _bikeRepository;
 
-    public ReservationService(
-        IReservationRepository reservationRepository,
-        IBikeRepository bikeRepository)
+    public ReservationService(IReservationRepository reservationRepository)
     {
         _reservationRepository = reservationRepository;
-        _bikeRepository = bikeRepository;
     }
 
-    public AvailabilityResult CheckBikesAvailability(IEnumerable<int> bikesIds, DateTime timeStart, DateTime dateEnd)
+    public async Task<AvailabilityResult> CheckBikesAvailability(
+        IEnumerable<int> bikesIds,
+        DateTime timeStart,
+        DateTime timeEnd)
     {
         var notAvailableBikesIds = new List<int>();
 
         foreach (var bikeId in bikesIds)
         {
-            if (!IsBikeAvailableInGivenPeriod(bikeId, timeStart, dateEnd))
+            if (await BikeIsNotAvailableInGivenPeriod(bikeId, timeStart, timeEnd))
                 notAvailableBikesIds.Add(bikeId);
         }
 
@@ -40,16 +41,35 @@ public class ReservationService : IReservationService
         };
     }
 
-    public bool IsBikeAvailableInGivenPeriod(int bikeId, DateTime timeStart, DateTime dateEnd)
+    public async Task<List<DateRange>> GetBlockedDays(
+        int bikeId,
+        DateTime timeStart,
+        DateTime timeEnd)
     {
+        var reservations = await _reservationRepository.GetAllBikeReservationsInGivenPeriod(
+            bikeId,
+            timeStart,
+            timeEnd);
 
+        var reservationsDates = new List<DateRange>();
 
-        return true;
+        foreach (var reservation in reservations)
+        {
+            var range = new DateRange(reservation.DateTimeStart, reservation.DateTimeEnd);
+            reservationsDates.Add(range);
+        }
+
+        return reservationsDates;
     }
 
-    public int CalculateReservationCost()
+    private async Task<bool> BikeIsNotAvailableInGivenPeriod(
+        int bikeId,
+        DateTime timeStart,
+        DateTime timeEnd)
     {
-        return 0;
+        var blockedDays = await GetBlockedDays(bikeId, timeStart, timeEnd);
+
+        return blockedDays.Count != 0;
     }
 
     private static string PrepareBikesAvailabilityErrorMessage(List<int> notAvailableBikesIds)
@@ -60,8 +80,15 @@ public class ReservationService : IReservationService
         }
 
         var idsString = string.Join(", ", notAvailableBikesIds);
-        var message = $"Bikes with IDs = {idsString} are not available in given period";
+        var message = $"Bikes with IDs = {{ {idsString} }} are not available in given period";
 
         return message;
+    }
+
+    public double CalculateReservationCost(
+        IEnumerable<Bike> reservationBikesEntities,
+        int numberOfDays)
+    {
+        return reservationBikesEntities.Sum(bike => bike.RentCostPerDay) * numberOfDays;
     }
 }
