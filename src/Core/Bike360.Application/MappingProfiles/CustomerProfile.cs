@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using Bike360.Application.Features.Customers.Commands.CreateCustomer;
-using Bike360.Application.Features.DivingSchoolCustomers.Commands.CreateDivingSchoolCustomer;
-using Bike360.Application.Features.DivingSchoolCustomers.Commands.UpdateDivingSchoolCustomer;
-using Bike360.Application.Features.DivingSchoolCustomers.Queries.GetAllDivingSchoolCustomers;
-using Bike360.Application.Features.DivingSchoolCustomers.Queries.GetDivingSchoolCustomerDetails;
+using Bike360.Application.Features.Customers.Commands.UpdateCustomer;
+using Bike360.Application.Features.Customers.Queries.GetAllCustomers;
+using Bike360.Application.Features.Customers.Queries.GetCustomerDetails;
 using Bike360.Application.Features.Shared;
 using Bike360.Application.MappingProfiles.Customs;
 using Bike360.Domain;

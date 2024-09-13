@@ -2,7 +2,7 @@
 using Bike360.Application.Contracts.Persistence;
 using MediatR;
 
-namespace Bike360.Application.Features.DivingSchoolCustomers.Queries.GetAllDivingSchoolCustomers;
+namespace Bike360.Application.Features.Customers.Queries.GetAllCustomers;
 
 public class GetAllCustomersQueryHandler : IRequestHandler<GetAllCustomersQuery, IEnumerable<CustomerDto>>
 {

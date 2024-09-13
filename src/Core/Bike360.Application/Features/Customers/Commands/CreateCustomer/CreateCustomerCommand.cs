@@ -1,7 +1,6 @@
-﻿using Bike360.Application.Features.Customers.Commands.CreateCustomer;
-using MediatR;
+﻿using MediatR;
 
-namespace Bike360.Application.Features.DivingSchoolCustomers.Commands.CreateDivingSchoolCustomer;
+namespace Bike360.Application.Features.Customers.Commands.CreateCustomer;
 
 public class CreateCustomerCommand : IRequest<int>
 {

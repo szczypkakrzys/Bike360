@@ -1,5 +1,5 @@
 ﻿using MediatR;
 
-namespace Bike360.Application.Features.DivingSchoolCustomers.Queries.GetDivingSchoolCustomerDetails;
+namespace Bike360.Application.Features.Customers.Queries.GetCustomerDetails;
 
 public record GetCustomerDetailsQuery(int Id) : IRequest<CustomerDetailsDto>;

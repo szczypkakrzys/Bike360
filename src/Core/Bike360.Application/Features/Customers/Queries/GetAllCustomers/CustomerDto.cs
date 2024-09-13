@@ -1,4 +1,4 @@
-﻿namespace Bike360.Application.Features.DivingSchoolCustomers.Queries.GetAllDivingSchoolCustomers;
+﻿namespace Bike360.Application.Features.Customers.Queries.GetAllCustomers;
 
 public class CustomerDto
 {

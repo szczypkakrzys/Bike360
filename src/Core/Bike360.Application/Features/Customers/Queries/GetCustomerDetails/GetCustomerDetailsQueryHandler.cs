@@ -4,7 +4,7 @@ using Bike360.Application.Exceptions;
 using Bike360.Domain;
 using MediatR;
 
-namespace Bike360.Application.Features.DivingSchoolCustomers.Queries.GetDivingSchoolCustomerDetails;
+namespace Bike360.Application.Features.Customers.Queries.GetCustomerDetails;
 
 public class GetCustomerDetailsQueryHandler : IRequestHandler<GetCustomerDetailsQuery, CustomerDetailsDto>
 {

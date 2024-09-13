@@ -2,7 +2,6 @@
 using Bike360.Application.Contracts.Persistence;
 using Bike360.Application.Exceptions;
 using Bike360.Application.Features.Customers.Commands.CreateCustomer;
-using Bike360.Application.Features.DivingSchoolCustomers.Commands.CreateDivingSchoolCustomer;
 using Bike360.Domain;
 using FluentAssertions;
 using FluentValidation;

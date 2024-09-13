@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Bike360.Application.Contracts.Persistence;
 using Bike360.Application.Exceptions;
-using Bike360.Application.Features.DivingSchoolCustomers.Commands.UpdateDivingSchoolCustomer;
+using Bike360.Application.Features.Customers.Commands.UpdateCustomer;
 using Bike360.Application.Features.Shared;
 using Bike360.Domain;
 using FluentAssertions;

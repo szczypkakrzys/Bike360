@@ -4,7 +4,7 @@ using Bike360.Application.Exceptions;
 using Bike360.Domain;
 using MediatR;
 
-namespace Bike360.Application.Features.DivingSchoolCustomers.Commands.UpdateDivingSchoolCustomer;
+namespace Bike360.Application.Features.Customers.Commands.UpdateCustomer;
 
 public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Unit>
 {

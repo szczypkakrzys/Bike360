@@ -1,7 +1,7 @@
 ﻿using Bike360.Application.Contracts.Persistence;
 using FluentValidation;
 
-namespace Bike360.Application.Features.DivingSchoolCustomers.Commands.UpdateDivingSchoolCustomer;
+namespace Bike360.Application.Features.Customers.Commands.UpdateCustomer;
 
 public class UpdateCustomerCommandValidator : AbstractValidator<UpdateCustomerCommand>
 {

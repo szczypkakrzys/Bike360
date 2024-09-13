@@ -1,6 +1,6 @@
 ﻿using Bike360.Application.Contracts.Persistence;
 using Bike360.Application.Exceptions;
-using Bike360.Application.Features.DivingSchoolCustomers.Commands.DeleteDivingSchoolCustomer;
+using Bike360.Application.Features.Customers.Commands.DeleteCustomer;
 using Bike360.Domain;
 using FluentAssertions;
 using MediatR;

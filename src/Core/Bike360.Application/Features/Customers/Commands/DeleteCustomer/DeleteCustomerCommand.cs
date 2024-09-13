@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Bike360.Application.Features.DivingSchoolCustomers.Commands.DeleteDivingSchoolCustomer;
+namespace Bike360.Application.Features.Customers.Commands.DeleteCustomer;
 
 public class DeleteCustomerCommand : IRequest<Unit>
 {

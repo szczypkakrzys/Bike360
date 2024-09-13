@@ -1,7 +1,6 @@
 ﻿using Bike360.Application.Features.Shared;
 
-namespace Bike360.Application.Features.DivingSchoolCustomers.Queries.GetDivingSchoolCustomerDetails;
-
+namespace Bike360.Application.Features.Customers.Queries.GetCustomerDetails;
 public class CustomerDetailsDto
 {
     public int Id { get; set; }

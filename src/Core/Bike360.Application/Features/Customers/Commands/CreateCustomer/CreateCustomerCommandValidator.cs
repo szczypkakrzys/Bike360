@@ -1,7 +1,7 @@
 ﻿using Bike360.Application.Contracts.Persistence;
 using FluentValidation;
 
-namespace Bike360.Application.Features.DivingSchoolCustomers.Commands.CreateDivingSchoolCustomer;
+namespace Bike360.Application.Features.Customers.Commands.CreateCustomer;
 
 public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCommand>
 {
@@ -42,7 +42,8 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
         RuleFor(p => p.Address)
             .NotEmpty()
                 .WithMessage("{PropertyName} is required");
-
+        //TODO
+        //add validation for all address fields
         _customerRepository = customerRepository;
     }
 

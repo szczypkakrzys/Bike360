@@ -1,8 +1,8 @@
-﻿using Bike360.Application.Features.DivingSchoolCustomers.Commands.CreateDivingSchoolCustomer;
-using Bike360.Application.Features.DivingSchoolCustomers.Commands.DeleteDivingSchoolCustomer;
-using Bike360.Application.Features.DivingSchoolCustomers.Commands.UpdateDivingSchoolCustomer;
-using Bike360.Application.Features.DivingSchoolCustomers.Queries.GetAllDivingSchoolCustomers;
-using Bike360.Application.Features.DivingSchoolCustomers.Queries.GetDivingSchoolCustomerDetails;
+﻿using Bike360.Application.Features.Customers.Commands.CreateCustomer;
+using Bike360.Application.Features.Customers.Commands.DeleteCustomer;
+using Bike360.Application.Features.Customers.Commands.UpdateCustomer;
+using Bike360.Application.Features.Customers.Queries.GetAllCustomers;
+using Bike360.Application.Features.Customers.Queries.GetCustomerDetails;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
