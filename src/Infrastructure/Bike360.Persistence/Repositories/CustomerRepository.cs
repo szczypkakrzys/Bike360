@@ -26,4 +26,11 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
 
         return !result;
     }
+
+    public async Task<Customer> GetByIdWithAddressAsync(int id)
+    {
+        return await _context.Customers
+             .Include(c => c.Address)
+             .FirstOrDefaultAsync(c => c.Id == id);
+    }
 }

@@ -36,13 +36,7 @@ public class Bike360DatabaseContext : DbContext
         modelBuilder.Entity<Reservation>()
             .HasMany(e => e.Bikes)
             .WithMany(e => e.Reservations)
-            .UsingEntity<ReservationBike>(
-                l => l.HasOne<Bike>()
-                        .WithMany(e => e.ReservationBikes)
-                        .HasForeignKey(e => e.BikeId),
-                r => r.HasOne<Reservation>()
-                        .WithMany(e => e.ReservationBikes)
-                        .HasForeignKey(e => e.ReservationId));
+            .UsingEntity<ReservationBike>();
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

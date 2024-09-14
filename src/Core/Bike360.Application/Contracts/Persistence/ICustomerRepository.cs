@@ -4,8 +4,9 @@ namespace Bike360.Application.Contracts.Persistence;
 
 public interface ICustomerRepository : IGenericRepository<Customer>
 {
-    Task<bool> IsCustomerUnique(
+    public Task<bool> IsCustomerUnique(
         string firstName,
         string lastName,
         string emailAddress);
+    public Task<Customer> GetByIdWithAddressAsync(int id);
 }
