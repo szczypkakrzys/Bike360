@@ -40,7 +40,15 @@ public class CreateCustomerTests
             EmailAddress = "test@customer.com",
             PhoneNumber = "1234567890",
             DateOfBirth = DateTime.UtcNow,
-            Address = new CreateAddressDto()
+            Address = new CreateAddressDto
+            {
+                Country = "Country",
+                Voivodeship = "Voivodeship",
+                PostalCode = "00-000",
+                City = "City",
+                Street = "Street",
+                HouseNumber = "00/00"
+            }
         };
 
         _mapper.Map<Customer>(request).Returns(customerToCreate);

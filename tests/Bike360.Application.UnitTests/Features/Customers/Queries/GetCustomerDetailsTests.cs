@@ -36,7 +36,7 @@ public class GetCustomerDetailsTests
             EmailAddress = "customer@email.com"
         };
 
-        _customerRepository.GetByIdAsync(customerId).Returns(customerDetails);
+        _customerRepository.GetByIdWithAddressAsync(customerId).Returns(customerDetails);
         _mapper.Map<CustomerDetailsDto>(customerDetails).Returns(customerDetailsDto);
 
         // Act
@@ -60,6 +60,6 @@ public class GetCustomerDetailsTests
 
         // Assert
         await act.Should().ThrowAsync<NotFoundException>()
-            .WithMessage($"{nameof(Customer)} ({customerId}) was not found");
+            .WithMessage($"{nameof(Customer)} with ID = {customerId} was not found");
     }
 }

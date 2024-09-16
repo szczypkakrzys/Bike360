@@ -65,6 +65,6 @@ public class GetBikeDetailsTests
 
         // Assert
         await act.Should().ThrowAsync<NotFoundException>()
-            .WithMessage($"{nameof(Bike)} ({bikeId}) was not found");
+            .WithMessage($"{nameof(Bike)} with ID = {bikeId} was not found");
     }
 }

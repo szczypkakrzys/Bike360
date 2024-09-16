@@ -1,19 +1,14 @@
-﻿using Bike360.Application.Contracts.Persistence;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Bike360.Application.Features.Customers.Commands.UpdateCustomer;
 
 public class UpdateCustomerCommandValidator : AbstractValidator<UpdateCustomerCommand>
 {
-    private readonly ICustomerRepository _customerRepository;
-
-    public UpdateCustomerCommandValidator(ICustomerRepository customerRepository)
+    public UpdateCustomerCommandValidator()
     {
         RuleFor(p => p.Id)
             .NotEmpty()
-                .WithMessage("{PropertyName} is required")
-            .MustAsync(CustomerMustExist)
-                .WithMessage("Couldn't find customer with Id = {PropertyValue}");
+                .WithMessage("{PropertyName} is required");
 
         RuleFor(p => p.FirstName)
             .NotEmpty()
@@ -38,17 +33,8 @@ public class UpdateCustomerCommandValidator : AbstractValidator<UpdateCustomerCo
                 .WithMessage("{PropertyName} is required");
 
         RuleFor(p => p.Address)
-            .NotEmpty()
-                .WithMessage("{PropertyName} is required");
-
-        _customerRepository = customerRepository;
-    }
-
-    private async Task<bool> CustomerMustExist(
-        int id,
-        CancellationToken token)
-    {
-        var customer = await _customerRepository.GetByIdAsync(id);
-        return customer != null;
+            .NotNull()
+              .WithMessage("Address is required")
+            .SetValidator(new UpdateAddressDtoValidator());
     }
 }

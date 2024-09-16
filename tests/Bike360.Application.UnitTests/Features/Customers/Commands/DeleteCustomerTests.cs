@@ -55,6 +55,6 @@ public class DeleteCustomerTests
 
         // Assert
         await act.Should().ThrowAsync<NotFoundException>()
-           .WithMessage($"{nameof(Customer)} ({request.Id}) was not found");
+           .WithMessage($"{nameof(Customer)} with ID = {customerId} was not found");
     }
 }

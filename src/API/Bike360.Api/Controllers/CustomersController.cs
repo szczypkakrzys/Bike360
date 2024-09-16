@@ -34,9 +34,8 @@ public class CustomersController : Controller
     }
 
     [HttpPost]
-    [ProducesResponseType(201)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesDefaultResponseType]
     public async Task<IActionResult> Post(CreateCustomerCommand customer)
     {
@@ -47,7 +46,7 @@ public class CustomersController : Controller
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(400)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesDefaultResponseType]
     public async Task<IActionResult> Put(UpdateCustomerCommand customer)
     {
@@ -58,7 +57,7 @@ public class CustomersController : Controller
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(400)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesDefaultResponseType]
     public async Task<IActionResult> Delete(int id)
     {

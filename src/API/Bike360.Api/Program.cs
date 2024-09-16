@@ -2,6 +2,7 @@ using Bike360.Api.Middleware;
 using Bike360.Application;
 using Bike360.Infrastructure;
 using Bike360.Persistence;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy("all", builder => builder.AllowAnyOrigin()
                                             .AllowAnyHeader()
                                             .AllowAnyMethod());
+});
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -45,3 +51,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

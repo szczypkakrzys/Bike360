@@ -23,11 +23,14 @@ public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerComman
         UpdateCustomerCommand request,
         CancellationToken cancellationToken)
     {
-        var validator = new UpdateCustomerCommandValidator(_customerRepository);
+        var validator = new UpdateCustomerCommandValidator();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         if (validationResult.Errors.Count != 0)
             throw new BadRequestException("Invalid customer data", validationResult);
+
+        var customerData = await _customerRepository.GetByIdAsync(request.Id)
+            ?? throw new NotFoundException(nameof(Customer), request.Id);
 
         var customerToUpdate = _mapper.Map<Customer>(request);
 

@@ -48,6 +48,6 @@ public class DeleteBikeTests
 
         // Assert
         await act.Should().ThrowAsync<NotFoundException>()
-            .WithMessage($"{nameof(Bike)} ({request.Id}) was not found");
+            .WithMessage($"{nameof(Bike)} with ID = {request.Id} was not found");
     }
 }

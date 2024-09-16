@@ -22,7 +22,7 @@ public class UpdateCustomerTests
     {
         _mapper = Substitute.For<IMapper>();
         _customerRepository = Substitute.For<ICustomerRepository>();
-        _validator = new UpdateCustomerCommandValidator(_customerRepository);
+        _validator = new UpdateCustomerCommandValidator();
         _handler = new UpdateCustomerCommandHandler(_mapper, _customerRepository);
     }
 
@@ -39,7 +39,15 @@ public class UpdateCustomerTests
             EmailAddress = "test@customer.com",
             PhoneNumber = "1234567890",
             DateOfBirth = DateTime.UtcNow,
-            Address = new AddressDto()
+            Address = new AddressDto
+            {
+                Country = "Country",
+                Voivodeship = "Voivodeship",
+                PostalCode = "00-000",
+                City = "City",
+                Street = "Street",
+                HouseNumber = "00/00"
+            }
         };
 
         var customerToUpdate = new Customer();
@@ -57,7 +65,7 @@ public class UpdateCustomerTests
     }
 
     [Fact]
-    public async Task Validate_WithNonexistentCustomerId_ThrowsBadRequestExceptionAndShouldHaveIdValidationError()
+    public async Task Handle_WithNonexistentCustomerId_ThrowsNotFoundExceptionAndShouldHaveIdValidationError()
     {
         // Arrange
         var customerId = 1;
@@ -69,23 +77,27 @@ public class UpdateCustomerTests
             EmailAddress = "test@customer.com",
             PhoneNumber = "1234567890",
             DateOfBirth = DateTime.UtcNow,
-            Address = new AddressDto()
+            Address = new AddressDto
+            {
+                Country = "Country",
+                Voivodeship = "Voivodeship",
+                PostalCode = "00-000",
+                City = "City",
+                Street = "Street",
+                HouseNumber = "00/00"
+            }
         };
 
         _customerRepository.GetByIdAsync(customerId).Returns(default(Customer));
 
         // Act
-        var result = await _validator.TestValidateAsync(request);
         Func<Task> act = async () => await _handler.Handle(request, CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<BadRequestException>()
-           .WithMessage("Invalid customer data");
+        await act.Should().ThrowAsync<NotFoundException>()
+           .WithMessage($"{nameof(Customer)} with ID = {customerId} was not found");
 
         await _customerRepository.DidNotReceive().UpdateAsync(Arg.Any<Customer>());
-
-        result.ShouldHaveValidationErrorFor(request => request.Id)
-            .WithErrorMessage($"Couldn't find customer with Id = {request.Id}");
     }
 
     [Fact]

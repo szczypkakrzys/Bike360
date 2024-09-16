@@ -11,7 +11,6 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
     {
         //TODO
         //- add proper validation for e-mail and phone number to keep working properly 
-        //- add proper validation for address form :)))
 
         RuleFor(p => p.FirstName)
             .NotEmpty()
@@ -40,10 +39,10 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
                 .WithMessage("{PropertyName} is required");
 
         RuleFor(p => p.Address)
-            .NotEmpty()
-                .WithMessage("{PropertyName} is required");
-        //TODO
-        //add validation for all address fields
+          .NotNull()
+            .WithMessage("Address is required")
+          .SetValidator(new CreateAddressDtoValidator());
+
         _customerRepository = customerRepository;
     }
 
