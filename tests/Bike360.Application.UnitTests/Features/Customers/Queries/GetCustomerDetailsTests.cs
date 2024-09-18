@@ -36,7 +36,7 @@ public class GetCustomerDetailsTests
             EmailAddress = "customer@email.com"
         };
 
-        _customerRepository.GetByIdWithAddressAsync(customerId).Returns(customerDetails);
+        _customerRepository.GetByIdAsync(customerId).Returns(customerDetails);
         _mapper.Map<CustomerDetailsDto>(customerDetails).Returns(customerDetailsDto);
 
         // Act

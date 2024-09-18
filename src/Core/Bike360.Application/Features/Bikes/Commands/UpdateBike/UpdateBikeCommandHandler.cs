@@ -23,15 +23,18 @@ public class UpdateBikeCommandHandler : IRequestHandler<UpdateBikeCommand, Unit>
         UpdateBikeCommand request,
         CancellationToken cancellationToken)
     {
-        var validator = new UpdateBikeCommandValidator(_bikeRepository);
+        var validator = new UpdateBikeCommandValidator();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         if (validationResult.Errors.Count != 0)
             throw new BadRequestException("Invalid bike data", validationResult);
 
-        var bikeToUpdate = _mapper.Map<Bike>(request);
+        var bikeData = await _bikeRepository.GetByIdAsync(request.Id)
+            ?? throw new NotFoundException(nameof(Bike), request.Id);
 
-        await _bikeRepository.UpdateAsync(bikeToUpdate);
+        _mapper.Map(request, bikeData);
+
+        await _bikeRepository.UpdateAsync(bikeData);
 
         return Unit.Value;
     }

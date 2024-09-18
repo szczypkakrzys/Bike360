@@ -32,9 +32,9 @@ public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerComman
         var customerData = await _customerRepository.GetByIdAsync(request.Id)
             ?? throw new NotFoundException(nameof(Customer), request.Id);
 
-        var customerToUpdate = _mapper.Map<Customer>(request);
+        _mapper.Map(request, customerData);
 
-        await _customerRepository.UpdateAsync(customerToUpdate);
+        await _customerRepository.UpdateAsync(customerData);
 
         return Unit.Value;
     }

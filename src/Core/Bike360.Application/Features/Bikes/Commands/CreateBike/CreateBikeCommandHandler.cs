@@ -23,9 +23,6 @@ public class CreateBikeCommandHandler : IRequestHandler<CreateBikeCommand, int>
         CreateBikeCommand request,
         CancellationToken cancellationToken)
     {
-        //TODO
-        //add checking for customer exists in tests :)
-
         var validator = new CreateBikeCommandValidator();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 

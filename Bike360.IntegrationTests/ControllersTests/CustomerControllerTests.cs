@@ -53,7 +53,7 @@ public class CustomerControllerTests : IClassFixture<IntegrationTestsWebApplicat
     public async Task GetById_CustomerExists_ShouldReturnCustomerDetails()
     {
         // Arrange
-        var customerData = DataFixture.SampleCustomers().First();
+        var customerData = DataFixture.SampleCustomers[0];
 
         // Act
         var response = await _httpClient.GetAsync(ApiRoutes.Customers.ById(1));
@@ -181,12 +181,12 @@ public class CustomerControllerTests : IClassFixture<IntegrationTestsWebApplicat
             Address = new AddressDto
             {
                 Id = 2,
-                Country = "Country",
-                Voivodeship = "Voivodeship",
-                PostalCode = "00-000",
-                City = "City",
-                Street = "Street",
-                HouseNumber = "00/00"
+                Country = "Updated Country",
+                Voivodeship = "Updated Voivodeship",
+                PostalCode = "11-111",
+                City = "Updated City",
+                Street = "Updated Street",
+                HouseNumber = "11/11"
             }
         };
 
@@ -224,7 +224,7 @@ public class CustomerControllerTests : IClassFixture<IntegrationTestsWebApplicat
     }
 
     [Fact]
-    public async Task DeleteCustomer_CustomerIdDoesNotExist_ShouldReturnNotFound()
+    public async Task Delete_CustomerIdDoesNotExist_ShouldReturnNotFound()
     {
         // Act
         var response = await _httpClient.DeleteAsync(ApiRoutes.Customers.ById(NotExistingId));
@@ -234,7 +234,7 @@ public class CustomerControllerTests : IClassFixture<IntegrationTestsWebApplicat
     }
 
     [Fact]
-    public async Task DeleteCustomer_CustomerExists_ShouldDeleteAndReturnNoContent()
+    public async Task Delete_CustomerExists_ShouldDeleteAndReturnNoContent()
     {
         // Arrange
         var customerCreateResponse = await _httpClient.PostAsJsonAsync(ApiRoutes.Customers, DataFixture.CreateTestCustomerData);

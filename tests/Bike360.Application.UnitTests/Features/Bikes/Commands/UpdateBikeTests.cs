@@ -22,7 +22,7 @@ public class UpdateBikeTests
         _mapper = Substitute.For<IMapper>();
         _bikeRepository = Substitute.For<IBikeRepository>();
         _handler = new UpdateBikeCommandHandler(_bikeRepository, _mapper);
-        _validator = new UpdateBikeCommandValidator(_bikeRepository);
+        _validator = new UpdateBikeCommandValidator();
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public class UpdateBikeTests
     }
 
     [Fact]
-    public async Task Validate_WithNonexistentBikeId_ThrowsBadRequestExceptionAndShouldHaveIdValidationError()
+    public async Task Validate_WithNonexistentBikeId_ThrowsNotFoundExceptionAndShouldHaveIdValidationError()
     {
         // Arrange
         var bikeId = 1;
@@ -75,17 +75,13 @@ public class UpdateBikeTests
         _bikeRepository.GetByIdAsync(bikeId).Returns(default(Bike));
 
         // Act
-        var result = await _validator.TestValidateAsync(request);
         Func<Task> act = async () => await _handler.Handle(request, CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<BadRequestException>()
-            .WithMessage("Invalid bike data");
+        await act.Should().ThrowAsync<NotFoundException>()
+            .WithMessage($"{nameof(Bike)} with ID = {bikeId} was not found");
 
         await _bikeRepository.DidNotReceive().UpdateAsync(Arg.Any<Bike>());
-
-        result.ShouldHaveValidationErrorFor(request => request.Id)
-            .WithErrorMessage($"Couldn't find bike with Id = {request.Id}");
     }
 
     [Fact]

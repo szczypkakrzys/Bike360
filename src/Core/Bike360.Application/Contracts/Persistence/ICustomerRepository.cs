@@ -8,5 +8,6 @@ public interface ICustomerRepository : IGenericRepository<Customer>
         string firstName,
         string lastName,
         string emailAddress);
-    public Task<Customer> GetByIdWithAddressAsync(int id);
+
+    public new Task<Customer?> GetByIdAsync(int id);
 }

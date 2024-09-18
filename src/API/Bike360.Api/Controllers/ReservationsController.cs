@@ -16,13 +16,16 @@ public class ReservationsController : Controller
     }
 
     [HttpPost]
-    [ProducesResponseType(201)]
-    [ProducesResponseType(400)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
     public async Task<IActionResult> Post(CreateReservationCommand reservation)
     {
         var response = await _mediator.Send(reservation);
-        return CreatedAtAction("Created with id: ", response /*nameof(Get), new { id = response }*/);
+        return Ok();
+
+        //TODO - uncomment
+        //return CreatedAtAction(nameof(Get), new { id = response });
     }
 }

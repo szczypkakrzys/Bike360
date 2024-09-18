@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Bike360.Application.Contracts.Persistence;
 using Bike360.Application.Exceptions;
+using Bike360.Application.Features.Reservations.Constants;
 using Bike360.Application.Features.Reservations.Services;
 using Bike360.Domain;
 using MediatR;
@@ -47,7 +48,7 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
             request.DateTimeStart,
             reservationTimeEnd);
 
-        var reservationToCreate = CreateReservation(
+        var reservationToCreate = PrepareReservationEntity(
             request,
             reservationBikesEntities,
             customerData);
@@ -76,10 +77,10 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
     private async Task<Customer> GetCustomerDetails(int customerId)
     {
         return await _customerRepository.GetByIdAsync(customerId)
-                    ?? throw new BadRequestException($"Couldn't find customer with Id = {customerId}");
+                    ?? throw new NotFoundException(nameof(Customer), customerId);
     }
 
-    private Reservation CreateReservation(
+    private Reservation PrepareReservationEntity(
         CreateReservationCommand request,
         IEnumerable<Bike> reservationBikesEntities,
         Customer customer)
@@ -94,6 +95,7 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
         reservation.DateTimeEnd = CalculateReservationTimeEnd(request.DateTimeStart, request.NumberOfDays);
         reservation.Customer = customer;
         reservation.Cost = _reservationService.CalculateReservationCost(reservationBikesEntities, request.NumberOfDays);
+        reservation.Status = ReservationStatus.Pending;
 
         return reservation;
     }
@@ -123,6 +125,6 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
 
         var idsString = string.Join(", ", inconsistencies);
 
-        throw new BadRequestException($"Invalid reservation data. Bikes with following IDs were not found: {idsString}");
+        throw new NotFoundException($"Invalid reservation data. Bikes with following IDs were not found: {idsString}");
     }
 }

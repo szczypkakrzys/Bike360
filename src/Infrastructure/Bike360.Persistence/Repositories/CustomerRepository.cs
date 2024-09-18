@@ -27,10 +27,10 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
         return !result;
     }
 
-    public async Task<Customer> GetByIdWithAddressAsync(int id)
+    public new async Task<Customer?> GetByIdAsync(int id)
     {
         return await _context.Customers
-             .Include(c => c.Address)
-             .FirstOrDefaultAsync(c => c.Id == id);
+            .Include(c => c.Address)
+            .FirstOrDefaultAsync(c => c.Id == id);
     }
 }

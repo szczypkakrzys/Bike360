@@ -69,7 +69,7 @@ public class CreateReservationTests
     }
 
     [Fact]
-    public async Task Handle_BikesDoNotExist_ThrowsBadRequestExceptionAndShouldHaveBikesValidationError()
+    public async Task Handle_BikesDoNotExist_ThrowsNotFoundExceptionAndShouldHaveBikesValidationError()
     {
         // Arrange
         var request = new CreateReservationCommand
@@ -94,7 +94,7 @@ public class CreateReservationTests
         Func<Task> act = async () => await _handler.Handle(request, CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<BadRequestException>()
+        await act.Should().ThrowAsync<NotFoundException>()
             .WithMessage("Invalid reservation data. Bikes with following IDs were not found: 2, 3");
     }
 
@@ -129,7 +129,7 @@ public class CreateReservationTests
     }
 
     [Fact]
-    public async Task Handle_CustomerDoesNotExist_ThrowsBadRequestExceptionAndShouldHaveValidationError()
+    public async Task Handle_CustomerDoesNotExist_ThrowsNotFoundExceptionAndShouldHaveValidationError()
     {
         // Arrange
         var request = new CreateReservationCommand
@@ -147,8 +147,8 @@ public class CreateReservationTests
         Func<Task> act = async () => await _handler.Handle(request, CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<BadRequestException>()
-            .WithMessage($"Couldn't find customer with Id = {request.CustomerId}");
+        await act.Should().ThrowAsync<NotFoundException>()
+            .WithMessage($"Customer with ID = {request.CustomerId} was not found");
     }
 
     [Fact]

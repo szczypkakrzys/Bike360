@@ -1,24 +1,18 @@
-﻿using Bike360.Application.Contracts.Persistence;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Bike360.Application.Features.Bikes.Commands.UpdateBike;
 
 public class UpdateBikeCommandValidator : AbstractValidator<UpdateBikeCommand>
 {
-    private readonly IBikeRepository _bikeRepository;
-
-    public UpdateBikeCommandValidator(IBikeRepository bikeRepository)
+    public UpdateBikeCommandValidator()
     {
         RuleFor(p => p.Id)
-                  .NotEmpty()
-                      .WithMessage("{PropertyName} is required")
-                  .MustAsync(BikeMustExist)
-                      .WithMessage("Couldn't find bike with Id = {PropertyValue}");
+            .NotEmpty()
+                .WithMessage("{PropertyName} is required");
 
         RuleFor(p => p.Brand)
            .NotEmpty()
                .WithMessage("{PropertyName} is required");
-
 
         RuleFor(p => p.Type)
             .NotEmpty()
@@ -41,15 +35,5 @@ public class UpdateBikeCommandValidator : AbstractValidator<UpdateBikeCommand>
                 .WithMessage("Rent cost is required")
             .GreaterThan(0)
                 .WithMessage("Rent cost must be greater than 0");
-
-        _bikeRepository = bikeRepository;
-    }
-
-    private async Task<bool> BikeMustExist(
-    int id,
-      CancellationToken token)
-    {
-        var bike = await _bikeRepository.GetByIdAsync(id);
-        return bike != null;
     }
 }

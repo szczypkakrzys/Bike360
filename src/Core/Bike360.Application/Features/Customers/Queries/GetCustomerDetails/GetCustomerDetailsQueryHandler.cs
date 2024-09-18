@@ -22,7 +22,7 @@ public class GetCustomerDetailsQueryHandler : IRequestHandler<GetCustomerDetails
         GetCustomerDetailsQuery request,
         CancellationToken cancellationToken)
     {
-        var customerDetails = await _customerRepository.GetByIdWithAddressAsync(request.Id) ??
+        var customerDetails = await _customerRepository.GetByIdAsync(request.Id) ??
                     throw new NotFoundException(nameof(Customer), request.Id);
 
         var data = _mapper.Map<CustomerDetailsDto>(customerDetails);

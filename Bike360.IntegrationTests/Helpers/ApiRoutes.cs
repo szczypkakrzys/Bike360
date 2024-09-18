@@ -4,6 +4,7 @@ public static class ApiRoutes
 {
     public const string Bikes = "/api/bikes";
     public const string Customers = "/api/customers";
+    public const string Reservations = "/api/reservations";
 }
 
 public static class RouteExtensions
