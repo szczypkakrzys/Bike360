@@ -66,7 +66,7 @@ public class BikeControllerTests : IClassFixture<IntegrationTestsWebApplicationF
     }
 
     [Fact]
-    public async Task Post_ValidBikeData_ShouldReturnNoContent()
+    public async Task Post_ValidBikeData_ShouldReturnCreated()
     {
         // Act
         var response = await _httpClient.PostAsJsonAsync(ApiRoutes.Bikes, DataFixture.CreateTestBikeData);

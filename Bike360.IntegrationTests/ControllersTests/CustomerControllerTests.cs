@@ -71,7 +71,7 @@ public class CustomerControllerTests : IClassFixture<IntegrationTestsWebApplicat
     }
 
     [Fact]
-    public async Task Post_ValidCustomerData_ShouldReturnNoContent()
+    public async Task Post_ValidCustomerData_ShouldReturnCreated()
     {
         // Act
         var response = await _httpClient.PostAsJsonAsync(ApiRoutes.Customers, DataFixture.CreateTestCustomerData);
@@ -237,6 +237,8 @@ public class CustomerControllerTests : IClassFixture<IntegrationTestsWebApplicat
     public async Task Delete_CustomerExists_ShouldDeleteAndReturnNoContent()
     {
         // Arrange
+        var customerData = DataFixture.CreateTestCustomerData;
+        customerData.EmailAddress = "secondEmail@address.com";
         var customerCreateResponse = await _httpClient.PostAsJsonAsync(ApiRoutes.Customers, DataFixture.CreateTestCustomerData);
 
         var jsonResponse = await customerCreateResponse.Content.ReadAsStringAsync();
