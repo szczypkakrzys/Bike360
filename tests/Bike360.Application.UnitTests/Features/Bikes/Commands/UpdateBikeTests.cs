@@ -56,7 +56,7 @@ public class UpdateBikeTests
     }
 
     [Fact]
-    public async Task Validate_WithNonexistentBikeId_ThrowsNotFoundExceptionAndShouldHaveIdValidationError()
+    public async Task Handle_WithNonexistentBikeId_ThrowsNotFoundExceptionAndShouldHaveIdValidationError()
     {
         // Arrange
         var bikeId = 1;
@@ -141,7 +141,7 @@ public class UpdateBikeTests
         await act.Should().ThrowAsync<BadRequestException>()
            .WithMessage("Invalid bike data");
 
-        await _bikeRepository.DidNotReceive().CreateAsync(Arg.Any<Bike>());
+        await _bikeRepository.DidNotReceive().UpdateAsync(Arg.Any<Bike>());
 
         result.ShouldHaveValidationErrorFor(request => request.RentCostPerDay)
             .WithErrorMessage("Rent cost must be greater than 0");

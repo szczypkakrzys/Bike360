@@ -1,4 +1,6 @@
 ﻿using Bike360.Application.Features.Reservations.Commands.CreateReservation;
+using Bike360.Application.Features.Reservations.Commands.DeleteReservations;
+using Bike360.Application.Features.Reservations.Commands.UpdateReservationStatus;
 using Bike360.Application.Features.Reservations.Queries.GetCustomerReservations;
 using Bike360.Application.Features.Reservations.Queries.GetReservationDetails;
 using MediatR;
@@ -43,5 +45,28 @@ public class ReservationsController : Controller
 
         var uri = Url.Action(nameof(Get), new { id = response });
         return Created(uri, new { id = response });
+    }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var command = new DeleteReservationCommand { Id = id };
+        await _mediator.Send(command);
+        return NoContent();
+    }
+
+    [HttpPatch("status")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
+    public async Task<IActionResult> Patch(UpdateReservationStatusCommand command)
+    {
+        await _mediator.Send(command);
+        return NoContent();
     }
 }

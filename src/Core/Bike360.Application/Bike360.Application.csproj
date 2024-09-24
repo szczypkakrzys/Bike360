@@ -7,6 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Features\Reservations\Commands\UpdateReservation\**" />
+      <EmbeddedResource Remove="Features\Reservations\Commands\UpdateReservation\**" />
+      <None Remove="Features\Reservations\Commands\UpdateReservation\**" />
+    </ItemGroup>
+
+    <ItemGroup>
       <PackageReference Include="AutoMapper" Version="13.0.1" />
       <PackageReference Include="FluentValidation" Version="11.8.1" />
       <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.8.1" />
@@ -16,13 +22,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Bike360.Domain\Bike360.Domain.csproj" />
-    </ItemGroup>
-
-
-    <ItemGroup>
-      <Folder Include="Features\Reservations\Commands\DeleteReservations\" />
-      <Folder Include="Features\Reservations\Commands\UpdateReservationStatus\" />
-      <Folder Include="Features\Reservations\Commands\UpdateReservation\" />
     </ItemGroup>
 
 </Project>

@@ -1,5 +1,7 @@
 ﻿using Bike360.Api.Models;
 using Bike360.Application.Features.Reservations.Commands.CreateReservation;
+using Bike360.Application.Features.Reservations.Commands.UpdateReservationStatus;
+using Bike360.Application.Features.Reservations.Constants;
 using Bike360.Application.Features.Reservations.Queries.GetCustomerReservations;
 using Bike360.Application.Features.Reservations.Queries.GetReservationDetails;
 using Bike360.IntegrationTests.Helpers;
@@ -228,5 +230,115 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task Delete_ReservationIdDoesNotExist_ShouldReturnNotFound()
+    {
+        // Act
+        var response = await _httpClient.DeleteAsync(ApiRoutes.Reservations.ById(NotExistingId));
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task Delete_ReservationExists_ShouldDeleteAndReturnNoContent()
+    {
+        // Arrange
+        var reservationData = DataFixture.CreateTestReservationData;
+        reservationData.DateTimeStart = reservationData.DateTimeStart.AddDays(20);
+
+        var reservationCreateResponse = await _httpClient.PostAsJsonAsync(ApiRoutes.Reservations, reservationData);
+
+        var jsonResponse = await reservationCreateResponse.Content.ReadAsStringAsync();
+        using var jsonDocument = JsonDocument.Parse(jsonResponse);
+        var reservationId = jsonDocument.RootElement.GetProperty("id").GetInt32();
+
+        // Act
+        var response = await _httpClient.DeleteAsync(ApiRoutes.Reservations.ById(reservationId));
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+        var getResponse = await _httpClient.GetAsync(ApiRoutes.Reservations.ById(reservationId));
+        getResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task PatchReservationStatus_ValidStatus_ShouldReturnNoContent()
+    {
+        // Arrange
+        var request = new UpdateReservationStatusCommand
+        {
+            Id = 1,
+            Status = ReservationStatus.Pending
+        };
+
+        // Act
+        var response = await _httpClient.PatchAsJsonAsync(ApiRoutes.Reservations, request);
+
+        // Assert 
+        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+        var updatedReservationData = await _httpClient.GetFromJsonAsync<ReservationDetailsDto>(ApiRoutes.Reservations.ById(request.Id));
+        updatedReservationData.Status.Should().Be(request.Status);
+    }
+
+    [Fact]
+    public async Task PatchReservationStatus_ReservationDoesNotExist_ShouldReturnNotFound()
+    {
+        // Arrange
+        var request = new UpdateReservationStatusCommand
+        {
+            Id = NotExistingId,
+            Status = ReservationStatus.Pending
+        };
+
+        // Act
+        var response = await _httpClient.PatchAsJsonAsync(ApiRoutes.Reservations, request);
+
+        // Assert 
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task PatchReservationStatus_UpdateDataIsEmpty_ShouldReturnBadRequestWithErrorMessage()
+    {
+        // Arrange
+        var request = new UpdateReservationStatusCommand();
+
+        // Act
+        var response = await _httpClient.PatchAsJsonAsync(ApiRoutes.Reservations, request);
+        var validationErrors = await response.Content.ReadFromJsonAsync<CustomProblemDetails>();
+
+        // Assert 
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        validationErrors.Should().NotBeNull();
+        validationErrors.Errors.Should().ContainKeys(
+            nameof(UpdateReservationStatusCommand.Id),
+            nameof(UpdateReservationStatusCommand.Status));
+    }
+
+    [Fact]
+    public async Task PatchReservationStatus_StatusIsNotValid_ShouldReturnBadRequestWithErrorMessage()
+    {
+        // Arrange
+        var request = new UpdateReservationStatusCommand
+        {
+            Id = 1,
+            Status = "Test Status 12345"
+        };
+
+        // Act
+        var response = await _httpClient.PatchAsJsonAsync(ApiRoutes.Reservations, request);
+        var validationErrors = await response.Content.ReadFromJsonAsync<CustomProblemDetails>();
+
+        // Assert 
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        validationErrors.Should().NotBeNull();
+
+        validationErrors.Errors.Should().ContainSingle(
+           nameof(UpdateReservationStatusCommand.Status), "The status value is not valid. It must be one of the following: Pending.");
     }
 }
