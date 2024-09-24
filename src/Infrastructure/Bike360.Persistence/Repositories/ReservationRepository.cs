@@ -17,9 +17,24 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
         DateTime periodEnd)
     {
         return await _context.Reservations
-        .Where(reservation => reservation.Bikes.Any(bike => bike.Id == bikeId) &&
-                              reservation.DateTimeStart <= periodEnd &&
-                              reservation.DateTimeEnd >= periodStart)
-        .ToListAsync();
+            .Where(reservation => reservation.Bikes.Any(bike => bike.Id == bikeId) &&
+                                  reservation.DateTimeStart <= periodEnd &&
+                                  reservation.DateTimeEnd >= periodStart)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Reservation>> GetAllCustomerReservations(int customerId)
+    {
+        return await _context.Reservations
+            .Where(reservation => reservation.CustomerId == customerId)
+            .ToListAsync();
+    }
+
+    public async Task<Reservation> GetReservationWithDetails(int reservationId)
+    {
+        return await _context.Reservations
+            .Include(reservation => reservation.Customer)
+            .Include(reservation => reservation.Bikes)
+            .FirstOrDefaultAsync(reservation => reservation.Id == reservationId);
     }
 }

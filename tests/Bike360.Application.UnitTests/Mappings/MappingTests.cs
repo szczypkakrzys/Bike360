@@ -8,6 +8,7 @@ using Bike360.Application.Features.Customers.Commands.UpdateCustomer;
 using Bike360.Application.Features.Customers.Queries.GetAllCustomers;
 using Bike360.Application.Features.Customers.Queries.GetCustomerDetails;
 using Bike360.Application.Features.Reservations.Commands.CreateReservation;
+using Bike360.Application.Features.Reservations.Queries.GetCustomerReservations;
 using Bike360.Application.MappingProfiles;
 using Bike360.Domain;
 using System.Runtime.CompilerServices;
@@ -55,6 +56,9 @@ public class MappingTests
 
     // Reservation
     [InlineData(typeof(CreateReservationCommand), typeof(Reservation))]
+    [InlineData(typeof(Reservation), typeof(ReservationDto))]
+    [InlineData(typeof(Customer), typeof(Application.Features.Reservations.Queries.GetReservationDetails.CustomerDto))]
+    [InlineData(typeof(Bike), typeof(Application.Features.Reservations.Queries.GetReservationDetails.BikeDto))]
 
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {

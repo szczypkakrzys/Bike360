@@ -8,4 +8,7 @@ public interface IReservationRepository : IGenericRepository<Reservation>
         int bikeId,
         DateTime periodStart,
         DateTime periodEnd);
+
+    Task<IEnumerable<Reservation>> GetAllCustomerReservations(int customerId);
+    Task<Reservation> GetReservationWithDetails(int reservationId);
 }

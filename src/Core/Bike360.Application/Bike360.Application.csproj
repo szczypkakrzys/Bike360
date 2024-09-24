@@ -23,8 +23,6 @@
       <Folder Include="Features\Reservations\Commands\DeleteReservations\" />
       <Folder Include="Features\Reservations\Commands\UpdateReservationStatus\" />
       <Folder Include="Features\Reservations\Commands\UpdateReservation\" />
-      <Folder Include="Features\Reservations\Queries\GetReservationById\" />
-      <Folder Include="Features\Reservations\Queries\GetAllCustomerReservatios\" />
     </ItemGroup>
 
 </Project>

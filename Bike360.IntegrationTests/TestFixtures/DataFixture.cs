@@ -7,6 +7,10 @@ namespace Bike360.IntegrationTests.Tests;
 
 public static class DataFixture
 {
+    // TODO: Review
+    // Currently all sample data is stored here
+    // Important: Do not modify or delete the first object in any collection, as these are used in the GetById method tests :)
+
     public static readonly List<Customer> SampleCustomers =
     [
         new()
@@ -135,7 +139,7 @@ public static class DataFixture
         DateTimeStart = timeNow.AddDays(10),
         NumberOfDays = 5,
         Comments = "Test comments",
-        CustomerId = 1,
+        CustomerId = 2,
         BikesIds = new[] { 1, 2 }
     };
 }

@@ -41,6 +41,9 @@ public class ReservationService : IReservationService
         };
     }
 
+    //TODO
+    //reuse this method to calculate bikes availability
+    // can be refactored by putting repo.GetAllBikeReservationsInGivenPeriod() method to BikeIsNotAvailableInGivenPeriod() to now invoke extra method when it's not needed in this flow
     public async Task<List<DateRange>> GetBlockedDays(
         int bikeId,
         DateTime timeStart,

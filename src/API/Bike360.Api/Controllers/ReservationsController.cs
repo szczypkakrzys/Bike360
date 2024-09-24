@@ -1,4 +1,6 @@
 ﻿using Bike360.Application.Features.Reservations.Commands.CreateReservation;
+using Bike360.Application.Features.Reservations.Queries.GetCustomerReservations;
+using Bike360.Application.Features.Reservations.Queries.GetReservationDetails;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +17,21 @@ public class ReservationsController : Controller
         _mediator = mediator;
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ReservationDetailsDto>> Get(int id)
+    {
+        var reservationDetails = await _mediator.Send(new GetReservationDetailsQuery(id));
+
+        return Ok(reservationDetails);
+    }
+
+    [HttpGet("user/{id}")]
+    public async Task<ActionResult<List<ReservationDto>>> GetCustomerReservations(int id)
+    {
+        var customerReservations = await _mediator.Send(new GetCustomerReservationsQuery(id));
+        return Ok(customerReservations);
+    }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -23,9 +40,8 @@ public class ReservationsController : Controller
     public async Task<IActionResult> Post(CreateReservationCommand reservation)
     {
         var response = await _mediator.Send(reservation);
-        return Ok();
 
-        //TODO - uncomment
-        //return CreatedAtAction(nameof(Get), new { id = response });
+        var uri = Url.Action(nameof(Get), new { id = response });
+        return Created(uri, new { id = response });
     }
 }
