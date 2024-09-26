@@ -18,8 +18,8 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
     {
         return await _context.Reservations
             .Where(reservation => reservation.Bikes.Any(bike => bike.Id == bikeId) &&
-                                  reservation.DateTimeStart <= periodEnd &&
-                                  reservation.DateTimeEnd >= periodStart)
+                                  reservation.DateTimeStartInUtc <= periodEnd &&
+                                  reservation.DateTimeEndInUtc >= periodStart)
             .ToListAsync();
     }
 

@@ -139,8 +139,8 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         {
             new()
             {
-                DateTimeStart = reservationEntity.DateTimeStart,
-                DateTimeEnd = reservationEntity.DateTimeEnd,
+                DateTimeStart = reservationEntity.DateTimeStartInUtc,
+                DateTimeEnd = reservationEntity.DateTimeEndInUtc,
                 Cost = reservationEntity.Cost,
                 Comments = reservationEntity.Comments,
                 Status = reservationEntity.Status
@@ -177,8 +177,8 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
 
         var expectedReservationData = new ReservationDetailsDto
         {
-            DateTimeStart = reservationData.DateTimeStart,
-            DateTimeEnd = reservationData.DateTimeEnd,
+            DateTimeStart = reservationData.DateTimeStartInUtc,
+            DateTimeEnd = reservationData.DateTimeEndInUtc,
             Cost = reservationData.Cost,
             Status = reservationData.Status,
             Comments = reservationData.Comments,

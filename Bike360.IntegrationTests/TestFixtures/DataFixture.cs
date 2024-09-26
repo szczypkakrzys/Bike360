@@ -81,8 +81,8 @@ public static class DataFixture
     [
         new()
         {
-            DateTimeStart = timeNow,
-            DateTimeEnd = timeNow.AddDays(5),
+            DateTimeStartInUtc = timeNow,
+            DateTimeEndInUtc = timeNow.AddDays(5),
             Cost = 5000,
             Status = "Status",
             Comments = "Comments",

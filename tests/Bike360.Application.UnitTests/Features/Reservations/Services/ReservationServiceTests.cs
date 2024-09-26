@@ -47,13 +47,13 @@ public class ReservationServiceTests
         {
             new()
             {
-                DateTimeStart = timeNow,
-                DateTimeEnd = timeNow.AddDays(2)
+                DateTimeStartInUtc = timeNow,
+                DateTimeEndInUtc = timeNow.AddDays(2)
             },
             new()
             {
-                DateTimeStart = timeNow.AddDays(3),
-                DateTimeEnd = timeNow.AddDays(4)
+                DateTimeStartInUtc = timeNow.AddDays(3),
+                DateTimeEndInUtc = timeNow.AddDays(4)
             }
         };
 
@@ -64,8 +64,8 @@ public class ReservationServiceTests
 
         var expectedResult = new List<DateRange>
         {
-            new(reservations[0].DateTimeStart, reservations[0].DateTimeEnd),
-            new(reservations[1].DateTimeStart, reservations[1].DateTimeEnd)
+            new(reservations[0].DateTimeStartInUtc, reservations[0].DateTimeEndInUtc),
+            new(reservations[1].DateTimeStartInUtc, reservations[1].DateTimeEndInUtc)
         };
 
         // Act

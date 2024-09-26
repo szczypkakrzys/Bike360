@@ -98,7 +98,7 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
             reservation.Bikes.Add(bike);
         }
 
-        reservation.DateTimeEnd = CalculateReservationTimeEnd(request.DateTimeStart, request.NumberOfDays);
+        reservation.DateTimeEndInUtc = CalculateReservationTimeEnd(request.DateTimeStart, request.NumberOfDays);
         reservation.Customer = customer;
         reservation.Cost = _reservationService.CalculateReservationCost(reservationBikesEntities, request.NumberOfDays);
         reservation.Status = ReservationStatus.Pending;

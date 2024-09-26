@@ -17,7 +17,7 @@ public class ReservationProfile : Profile
             .ForMember(dest => dest.Customer, opt => opt.Ignore())
             .ForMember(dest => dest.Bikes, opt => opt.Ignore())
             .ForMember(dest => dest.ReservationBikes, opt => opt.Ignore())
-            .ForMember(dest => dest.DateTimeEnd, opt => opt.Ignore())
+            .ForMember(dest => dest.DateTimeEndInUtc, opt => opt.Ignore())
             .ForMember(dest => dest.TimeCreatedInUtc, opt => opt.Ignore())
             .ForMember(dest => dest.TimeLastModifiedInUtc, opt => opt.Ignore());
 

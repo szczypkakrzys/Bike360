@@ -58,7 +58,7 @@ public class ReservationService : IReservationService
 
         foreach (var reservation in reservations)
         {
-            var range = new DateRange(reservation.DateTimeStart, reservation.DateTimeEnd);
+            var range = new DateRange(reservation.DateTimeStartInUtc, reservation.DateTimeEndInUtc);
             reservationsDates.Add(range);
         }
 
