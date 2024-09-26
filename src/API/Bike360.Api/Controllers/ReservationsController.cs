@@ -27,7 +27,7 @@ public class ReservationsController : Controller
         return Ok(reservationDetails);
     }
 
-    [HttpGet("user/{id}")]
+    [HttpGet("customer/{id}")]
     public async Task<ActionResult<List<ReservationDto>>> GetCustomerReservations(int id)
     {
         var customerReservations = await _mediator.Send(new GetCustomerReservationsQuery(id));
@@ -50,7 +50,6 @@ public class ReservationsController : Controller
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesDefaultResponseType]
     public async Task<IActionResult> Delete(int id)
     {

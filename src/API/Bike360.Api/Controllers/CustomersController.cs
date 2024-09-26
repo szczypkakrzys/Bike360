@@ -57,7 +57,6 @@ public class CustomersController : Controller
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesDefaultResponseType]
     public async Task<IActionResult> Delete(int id)
     {
