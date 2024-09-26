@@ -7,6 +7,7 @@ using Bike360.Application.Features.Reservations.Services;
 using Bike360.Domain;
 using FluentAssertions;
 using FluentValidation.TestHelper;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 
@@ -19,6 +20,7 @@ public class CreateReservationTests
     private readonly IReservationRepository _reservationRepository;
     private readonly IBikeRepository _bikeRepository;
     private readonly IReservationService _reservationService;
+    private readonly ILogger<CreateReservationCommandHandler> _logger;
     private readonly CreateReservationCommandHandler _handler;
     private readonly CreateReservationCommandValidator _validator;
 
@@ -29,7 +31,8 @@ public class CreateReservationTests
         _reservationRepository = Substitute.For<IReservationRepository>();
         _bikeRepository = Substitute.For<IBikeRepository>();
         _reservationService = Substitute.For<IReservationService>();
-        _handler = new CreateReservationCommandHandler(_reservationRepository, _bikeRepository, _customerRepository, _mapper, _reservationService);
+        _logger = Substitute.For<ILogger<CreateReservationCommandHandler>>();
+        _handler = new CreateReservationCommandHandler(_reservationRepository, _bikeRepository, _customerRepository, _mapper, _reservationService, _logger);
         _validator = new CreateReservationCommandValidator();
     }
 

@@ -1,15 +1,16 @@
 using Bike360.Api.Middleware;
 using Bike360.Application;
-using Bike360.Infrastructure;
 using Bike360.Persistence;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructureServices(builder.Configuration);
+// TODO - commented out as it is not currently in use
+//builder.Services.AddInfrastructureServices();
 builder.Services.AddPersistenceServices(builder.Configuration);
 
 builder.Services.AddControllers();
@@ -34,6 +35,10 @@ builder.Services.AddSwaggerGen(c =>
     c.CustomSchemaIds(type => type.FullName.Replace("+", "."));
 });
 
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration)
+);
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
@@ -44,6 +49,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 

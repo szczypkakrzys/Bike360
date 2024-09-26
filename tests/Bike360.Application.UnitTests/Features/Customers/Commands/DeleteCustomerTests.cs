@@ -4,6 +4,7 @@ using Bike360.Application.Features.Customers.Commands.DeleteCustomer;
 using Bike360.Domain;
 using FluentAssertions;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 
 namespace Bike360.Application.UnitTests.Features.Customers.Commands;
@@ -11,12 +12,14 @@ namespace Bike360.Application.UnitTests.Features.Customers.Commands;
 public class DeleteCustomerTests
 {
     private readonly ICustomerRepository _customerRepository;
+    private readonly ILogger<DeleteCustomerCommandHandler> _logger;
     private readonly DeleteCustomerCommandHandler _handler;
 
     public DeleteCustomerTests()
     {
         _customerRepository = Substitute.For<ICustomerRepository>();
-        _handler = new DeleteCustomerCommandHandler(_customerRepository);
+        _logger = Substitute.For<ILogger<DeleteCustomerCommandHandler>>();
+        _handler = new DeleteCustomerCommandHandler(_customerRepository, _logger);
     }
 
     [Fact]

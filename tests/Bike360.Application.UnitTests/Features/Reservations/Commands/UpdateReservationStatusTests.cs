@@ -5,6 +5,7 @@ using Bike360.Domain;
 using FluentAssertions;
 using FluentValidation.TestHelper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 
 namespace Bike360.Application.UnitTests.Features.Reservations.Commands;
@@ -12,13 +13,15 @@ namespace Bike360.Application.UnitTests.Features.Reservations.Commands;
 public class UpdateReservationStatusTests
 {
     private readonly IReservationRepository _reservationRepository;
+    private readonly ILogger<UpdateReservationStatusCommandHandler> _logger;
     private readonly UpdateReservationStatusCommandHandler _handler;
     private readonly UpdateReservationStatusCommandValidator _validator;
 
     public UpdateReservationStatusTests()
     {
         _reservationRepository = Substitute.For<IReservationRepository>();
-        _handler = new UpdateReservationStatusCommandHandler(_reservationRepository);
+        _logger = Substitute.For<ILogger<UpdateReservationStatusCommandHandler>>();
+        _handler = new UpdateReservationStatusCommandHandler(_reservationRepository, _logger);
         _validator = new UpdateReservationStatusCommandValidator();
     }
 

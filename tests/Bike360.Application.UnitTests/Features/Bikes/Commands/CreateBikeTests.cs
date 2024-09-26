@@ -5,6 +5,7 @@ using Bike360.Application.Features.Bikes.Commands.CreateBike;
 using Bike360.Domain;
 using FluentAssertions;
 using FluentValidation.TestHelper;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 
 namespace Bike360.Application.UnitTests.Features.Bikes.Commands;
@@ -13,6 +14,7 @@ public class CreateBikeTests
 {
     private readonly IMapper _mapper;
     private readonly IBikeRepository _bikeRepository;
+    private readonly ILogger<CreateBikeCommandHandler> _logger;
     private readonly CreateBikeCommandHandler _handler;
     private readonly CreateBikeCommandValidator _validator;
 
@@ -20,7 +22,8 @@ public class CreateBikeTests
     {
         _mapper = Substitute.For<IMapper>();
         _bikeRepository = Substitute.For<IBikeRepository>();
-        _handler = new CreateBikeCommandHandler(_mapper, _bikeRepository);
+        _logger = Substitute.For<ILogger<CreateBikeCommandHandler>>();
+        _handler = new CreateBikeCommandHandler(_mapper, _bikeRepository, _logger);
         _validator = new CreateBikeCommandValidator();
     }
 

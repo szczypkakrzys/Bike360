@@ -4,6 +4,7 @@ using Bike360.Application.Exceptions;
 using Bike360.Application.Features.Bikes.Queries.GetBikeDetails;
 using Bike360.Domain;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 
 namespace Bike360.Application.UnitTests.Features.Bikes.Queries;
@@ -12,13 +13,15 @@ public class GetBikeDetailsTests
 {
     public readonly IBikeRepository _bikeRepository;
     public readonly IMapper _mapper;
+    public readonly ILogger<GetBikeDetailsQueryHandler> _logger;
     public readonly GetBikeDetailsQueryHandler _handler;
 
     public GetBikeDetailsTests()
     {
         _bikeRepository = Substitute.For<IBikeRepository>();
         _mapper = Substitute.For<IMapper>();
-        _handler = new GetBikeDetailsQueryHandler(_bikeRepository, _mapper);
+        _logger = Substitute.For<ILogger<GetBikeDetailsQueryHandler>>();
+        _handler = new GetBikeDetailsQueryHandler(_bikeRepository, _mapper, _logger);
     }
 
     [Fact]

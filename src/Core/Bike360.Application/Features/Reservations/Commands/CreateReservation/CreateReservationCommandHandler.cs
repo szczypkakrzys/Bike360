@@ -5,6 +5,7 @@ using Bike360.Application.Features.Reservations.Constants;
 using Bike360.Application.Features.Reservations.Services;
 using Bike360.Domain;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Bike360.Application.Features.Reservations.Commands.CreateReservation;
 
@@ -15,25 +16,30 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
     private readonly ICustomerRepository _customerRepository;
     private readonly IMapper _mapper;
     private readonly IReservationService _reservationService;
+    private readonly ILogger<CreateReservationCommandHandler> _logger;
 
     public CreateReservationCommandHandler(
         IReservationRepository reservationRepository,
         IBikeRepository bikeRepository,
         ICustomerRepository customerRepository,
         IMapper mapper,
-        IReservationService reservationService)
+        IReservationService reservationService,
+        ILogger<CreateReservationCommandHandler> logger)
     {
         _reservationRepository = reservationRepository;
         _bikeRepository = bikeRepository;
         _customerRepository = customerRepository;
         _mapper = mapper;
         _reservationService = reservationService;
+        _logger = logger;
     }
 
     public async Task<int> Handle(
         CreateReservationCommand request,
         CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Creating a new reservation {@Reservation}", request);
+
         await ValidateCommand(request, cancellationToken);
 
         var customerData = await GetCustomerDetails(request.CustomerId);

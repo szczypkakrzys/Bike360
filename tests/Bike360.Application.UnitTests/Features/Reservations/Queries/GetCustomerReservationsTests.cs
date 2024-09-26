@@ -4,6 +4,7 @@ using Bike360.Application.Exceptions;
 using Bike360.Application.Features.Reservations.Queries.GetCustomerReservations;
 using Bike360.Domain;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 
 namespace Bike360.Application.UnitTests.Features.Reservations.Queries;
@@ -13,6 +14,7 @@ public class GetCustomerReservationsTests
     private readonly ICustomerRepository _customerRepository;
     private readonly IReservationRepository _reservationRepository;
     private readonly IMapper _mapper;
+    private readonly ILogger<GetCustomerReservationsQueryHandler> _logger;
     private readonly GetCustomerReservationsQueryHandler _handler;
 
     public GetCustomerReservationsTests()
@@ -20,7 +22,8 @@ public class GetCustomerReservationsTests
         _customerRepository = Substitute.For<ICustomerRepository>();
         _reservationRepository = Substitute.For<IReservationRepository>();
         _mapper = Substitute.For<IMapper>();
-        _handler = new GetCustomerReservationsQueryHandler(_customerRepository, _reservationRepository, _mapper);
+        _logger = Substitute.For<ILogger<GetCustomerReservationsQueryHandler>>();
+        _handler = new GetCustomerReservationsQueryHandler(_customerRepository, _reservationRepository, _mapper, _logger);
     }
 
     [Fact]

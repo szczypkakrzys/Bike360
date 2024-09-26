@@ -4,6 +4,7 @@ using Bike360.Application.Features.Reservations.Commands.DeleteReservations;
 using Bike360.Domain;
 using FluentAssertions;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 
 namespace Bike360.Application.UnitTests.Features.Reservations.Commands;
@@ -11,12 +12,14 @@ namespace Bike360.Application.UnitTests.Features.Reservations.Commands;
 public class DeleteReservationTests
 {
     private readonly IReservationRepository _reservationRepository;
+    private readonly ILogger<DeleteReservationCommandHandler> _logger;
     private readonly DeleteReservationCommandHandler _handler;
 
     public DeleteReservationTests()
     {
         _reservationRepository = Substitute.For<IReservationRepository>();
-        _handler = new DeleteReservationCommandHandler(_reservationRepository);
+        _logger = Substitute.For<ILogger<DeleteReservationCommandHandler>>();
+        _handler = new DeleteReservationCommandHandler(_reservationRepository, _logger);
     }
 
     [Fact]

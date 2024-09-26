@@ -15,7 +15,8 @@ public static class PersistenceServiceRegistration
     {
         services.AddDbContext<Bike360DatabaseContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("Bike360Database"));
+            options.UseSqlServer(configuration.GetConnectionString("Bike360Database"))
+                .EnableSensitiveDataLogging();
         });
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

@@ -2,6 +2,7 @@
 
 public class ReservationDto
 {
+    public int Id { get; set; }
     public DateTime DateTimeStart { get; set; }
     public DateTime DateTimeEnd { get; set; }
     public double Cost { get; set; }

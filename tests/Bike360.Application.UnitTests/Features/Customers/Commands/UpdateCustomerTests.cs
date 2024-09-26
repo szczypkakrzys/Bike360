@@ -7,6 +7,7 @@ using Bike360.Domain;
 using FluentAssertions;
 using FluentValidation.TestHelper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 
 namespace Bike360.Application.UnitTests.Features.Customers.Commands;
@@ -15,6 +16,7 @@ public class UpdateCustomerTests
 {
     private readonly IMapper _mapper;
     private readonly ICustomerRepository _customerRepository;
+    private readonly ILogger<UpdateCustomerCommandHandler> _logger;
     private readonly UpdateCustomerCommandValidator _validator;
     private readonly UpdateCustomerCommandHandler _handler;
 
@@ -22,8 +24,9 @@ public class UpdateCustomerTests
     {
         _mapper = Substitute.For<IMapper>();
         _customerRepository = Substitute.For<ICustomerRepository>();
+        _logger = Substitute.For<ILogger<UpdateCustomerCommandHandler>>();
         _validator = new UpdateCustomerCommandValidator();
-        _handler = new UpdateCustomerCommandHandler(_mapper, _customerRepository);
+        _handler = new UpdateCustomerCommandHandler(_mapper, _customerRepository, _logger);
     }
 
     [Fact]

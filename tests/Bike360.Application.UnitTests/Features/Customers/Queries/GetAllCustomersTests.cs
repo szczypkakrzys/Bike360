@@ -3,6 +3,7 @@ using Bike360.Application.Contracts.Persistence;
 using Bike360.Application.Features.Customers.Queries.GetAllCustomers;
 using Bike360.Domain;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 
 
@@ -12,13 +13,15 @@ public class GetAllCustomersTests
 {
     private readonly ICustomerRepository _customerRepository;
     private readonly IMapper _mapper;
+    private readonly ILogger<GetAllCustomersQueryHandler> _logger;
     private readonly GetAllCustomersQueryHandler _handler;
 
     public GetAllCustomersTests()
     {
         _customerRepository = Substitute.For<ICustomerRepository>();
         _mapper = Substitute.For<IMapper>();
-        _handler = new GetAllCustomersQueryHandler(_mapper, _customerRepository);
+        _logger = Substitute.For<ILogger<GetAllCustomersQueryHandler>>();
+        _handler = new GetAllCustomersQueryHandler(_mapper, _customerRepository, _logger);
     }
 
     [Fact]
