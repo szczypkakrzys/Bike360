@@ -3,6 +3,7 @@ using Bike360.Application.Features.Bikes.Commands.DeleteBike;
 using Bike360.Application.Features.Bikes.Commands.UpdateBike;
 using Bike360.Application.Features.Bikes.Queries.GetAllBikes;
 using Bike360.Application.Features.Bikes.Queries.GetBikeDetails;
+using Bike360.Application.Features.Bikes.Queries.GetBikeReservedDays;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -64,4 +65,20 @@ public class BikesController : Controller
         var bikeDetails = await _mediator.Send(new GetBikeDetailsQuery(id));
         return Ok(bikeDetails);
     }
+
+    [HttpGet("{id}/reserved-days")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
+    public async Task<IActionResult> GetBikeReservedDays(
+        [FromRoute] int id,
+        [FromQuery] DateTime timeStart,
+        [FromQuery] DateTime timeEnd)
+    {
+        var query = new GetBikeReservedTimeQuery(id, timeStart, timeEnd);
+        var reservedDateRanges = await _mediator.Send(query);
+        return Ok(reservedDateRanges);
+    }
+
 }

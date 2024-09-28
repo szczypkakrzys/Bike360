@@ -27,7 +27,7 @@ public class ReservationsController : Controller
         return Ok(reservationDetails);
     }
 
-    [HttpGet("customer/{id}")]
+    [HttpGet("customers/{id}/reservations")]
     public async Task<ActionResult<List<ReservationDto>>> GetCustomerReservations(int id)
     {
         var customerReservations = await _mediator.Send(new GetCustomerReservationsQuery(id));

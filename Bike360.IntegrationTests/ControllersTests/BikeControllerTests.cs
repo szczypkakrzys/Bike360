@@ -3,6 +3,8 @@ using Bike360.Application.Features.Bikes.Commands.CreateBike;
 using Bike360.Application.Features.Bikes.Commands.UpdateBike;
 using Bike360.Application.Features.Bikes.Queries.GetAllBikes;
 using Bike360.Application.Features.Bikes.Queries.GetBikeDetails;
+using Bike360.Application.Features.Bikes.Queries.GetBikeReservedDays;
+using Bike360.Domain.Models;
 using Bike360.IntegrationTests.Helpers;
 using Bike360.IntegrationTests.TestFixtures;
 using Bike360.IntegrationTests.Tests;
@@ -170,6 +172,7 @@ public class BikeControllerTests : IClassFixture<IntegrationTestsWebApplicationF
         updatedBikeData.Should().BeEquivalentTo(request);
     }
 
+    [Fact]
     public async Task Put_BikeDataIsEmpty_ShouldReturnBadRequestWithErrorMessage()
     {
         // Arrange
@@ -219,5 +222,52 @@ public class BikeControllerTests : IClassFixture<IntegrationTestsWebApplicationF
 
         var getResponse = await _httpClient.GetAsync(ApiRoutes.Bikes.ById(bikeId));
         getResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task GetBikeReservedDays_ValidRequest_ShouldReturnDateRangeList()
+    {
+        // Arrange
+        var timeStart = DataFixture.SampleReservations[0].DateTimeStartInUtc;
+        var timeEnd = timeStart.AddMonths(1);
+        var expectedList = new List<DateRange>();
+        var expectedDate = new DateRange(timeStart, DataFixture.SampleReservations[0].DateTimeEndInUtc);
+        expectedList.Add(expectedDate);
+
+        var timeFormat = "yyyy-MM-ddTHH:mm:ss";
+        var timeStartString = timeStart.ToString(timeFormat);
+        var timeEndString = timeEnd.ToString(timeFormat);
+
+        // Act
+        var response = await _httpClient.GetAsync(ApiRoutes.Bikes.ById(1) + $"/reserved-days?timeStart={timeStartString}&timeEnd={timeEndString}");
+        var result = await response.Content.ReadFromJsonAsync<List<DateRange>>();
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        result.Should().BeEquivalentTo(expectedList);
+    }
+
+    [Fact]
+    public async Task GetBikeReservedDays_BikeDoesNotExist_ShouldReturnNotFound()
+    {
+        // Act
+        var response = await _httpClient.GetAsync(ApiRoutes.Bikes.ById(NotExistingId) + "/reserved-days?timeStart=2024-01-01T01:01:01&timeEnd=2024-01-02T01:01:01");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task GetBikeReservedDays_TimeEndIsBeforeTimeStart_ShouldReturnBadRequestWithErrorMessage()
+    {
+        // Act
+        var response = await _httpClient.GetAsync(ApiRoutes.Bikes.ById(NotExistingId) + "/reserved-days?timeStart=2024-01-02T01:01:01&timeEnd=2024-01-01T01:01:01");
+        var validationErrors = await response.Content.ReadFromJsonAsync<CustomProblemDetails>();
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest); validationErrors.Should().NotBeNull();
+        validationErrors.Errors.Should().ContainSingle(
+            nameof(GetBikeReservedTimeQuery.TimeStart), "Start time must be before time end.");
     }
 }

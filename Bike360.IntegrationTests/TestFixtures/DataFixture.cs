@@ -136,7 +136,7 @@ public static class DataFixture
 
     public static readonly CreateReservationCommand CreateTestReservationData = new()
     {
-        DateTimeStart = timeNow.AddDays(10),
+        DateTimeStart = timeNow.AddYears(10),
         NumberOfDays = 5,
         Comments = "Test comments",
         CustomerId = 2,

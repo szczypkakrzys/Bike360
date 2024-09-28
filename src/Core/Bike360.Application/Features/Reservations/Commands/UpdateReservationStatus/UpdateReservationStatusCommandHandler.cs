@@ -34,9 +34,6 @@ public class UpdateReservationStatusCommandHandler : IRequestHandler<UpdateReser
         var reservationData = await _reservationRepository.GetByIdAsync(request.Id)
             ?? throw new NotFoundException(nameof(Reservation), request.Id);
 
-        if (!string.IsNullOrEmpty(request.Status))
-            reservationData.Status = request.Status;
-
         await _reservationRepository.UpdateAsync(reservationData);
 
         return Unit.Value;
