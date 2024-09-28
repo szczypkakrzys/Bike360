@@ -3,7 +3,7 @@ using Bike360.Application.Features.Customers.Commands.CreateCustomer;
 using Bike360.Application.Features.Customers.Commands.UpdateCustomer;
 using Bike360.Application.Features.Customers.Queries.GetAllCustomers;
 using Bike360.Application.Features.Customers.Queries.GetCustomerDetails;
-using Bike360.Application.Features.Shared;
+using Bike360.Application.Features.Customers.Shared;
 using Bike360.Domain;
 using Bike360.IntegrationTests.Helpers;
 using Bike360.IntegrationTests.TestFixtures;
@@ -104,6 +104,24 @@ public class CustomerControllerTests : IClassFixture<IntegrationTestsWebApplicat
             nameof(CreateCustomerCommand.PhoneNumber),
             nameof(CreateCustomerCommand.DateOfBirth),
             nameof(CreateCustomerCommand.Address));
+    }
+
+    [Fact]
+    public async Task Post_CustomerWithGivenEmailAlreadyExists_ShouldReturnBadRequestWithErrorMessage()
+    {
+        // Act
+        var customerData = DataFixture.CreateTestCustomerData;
+        customerData.EmailAddress = DataFixture.SampleCustomers[0].EmailAddress;
+
+        // Act
+        var response = await _httpClient.PostAsJsonAsync(ApiRoutes.Customers, customerData);
+        var validationErrors = await response.Content.ReadFromJsonAsync<CustomProblemDetails>();
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        validationErrors.Should().NotBeNull();
+        validationErrors.Errors.Should().ContainSingle(
+            nameof(CreateCustomerCommand.EmailAddress), "Customer with given e-mail already exists");
     }
 
     [Fact]

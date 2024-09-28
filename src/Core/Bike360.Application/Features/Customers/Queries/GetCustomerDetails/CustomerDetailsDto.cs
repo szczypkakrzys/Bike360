@@ -1,4 +1,4 @@
-﻿using Bike360.Application.Features.Shared;
+﻿using Bike360.Application.Features.Customers.Shared;
 
 namespace Bike360.Application.Features.Customers.Queries.GetCustomerDetails;
 public class CustomerDetailsDto

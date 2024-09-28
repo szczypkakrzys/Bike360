@@ -32,7 +32,7 @@ public class CreateCustomerTests
     public async Task Handle_ValidRequest_ReturnsCreatedCustomerId()
     {
         // Arrange
-        _customerRepository.IsCustomerUnique(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(true);
+        _customerRepository.IsEmailUnique(Arg.Any<string>()).Returns(true);
         var customerId = 1;
         var customerToCreate = new Customer { Id = customerId };
 
@@ -98,7 +98,7 @@ public class CreateCustomerTests
     public async Task Validate_EmailAddressHasIncorrectFormat_ThrowsBadRequestExceptionAndShouldHaveEmailValidationError()
     {
         // Arrange
-        _customerRepository.IsCustomerUnique(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(true);
+        _customerRepository.IsEmailUnique(Arg.Any<string>()).Returns(true);
 
         var request = new CreateCustomerCommand
         {
@@ -125,10 +125,10 @@ public class CreateCustomerTests
     }
 
     [Fact]
-    public async Task Validate_CustomerAlreadyExists_ThrowsBadRequestExceptionAndShouldHaveValidationError()
+    public async Task Validate_EmailIsAlreadyRegistered_ThrowsBadRequestExceptionAndShouldHaveValidationError()
     {
         // Arrange
-        _customerRepository.IsCustomerUnique(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(false);
+        _customerRepository.IsEmailUnique(Arg.Any<string>()).Returns(false);
 
         var request = new CreateCustomerCommand
         {
@@ -150,7 +150,35 @@ public class CreateCustomerTests
 
         await _customerRepository.DidNotReceive().CreateAsync(Arg.Any<Customer>());
 
-        result.ShouldHaveAnyValidationError()
-            .WithErrorMessage("Given customer already exists");
+        result.ShouldHaveValidationErrorFor(request => request.EmailAddress)
+            .WithErrorMessage("Customer with given e-mail already exists");
+    }
+
+    [Fact]
+    public async Task Validate_PhoneNumberConatinsLetters_ThrowsBadRequestExceptionAndShouldHaveValidationError()
+    {
+        // Arrange
+        var request = new CreateCustomerCommand
+        {
+            FirstName = "Test",
+            LastName = "Customer",
+            EmailAddress = "test@customer.com",
+            PhoneNumber = "abc1DEF2ghj",
+            DateOfBirth = DateTime.UtcNow,
+            Address = new CreateAddressDto()
+        };
+
+        // Act
+        var result = await _validator.TestValidateAsync(request);
+        Func<Task> act = async () => await _handler.Handle(request, CancellationToken.None);
+
+        // Assert
+        await act.Should().ThrowAsync<BadRequestException>()
+            .WithMessage("Invalid Customer");
+
+        await _customerRepository.DidNotReceive().CreateAsync(Arg.Any<Customer>());
+
+        result.ShouldHaveValidationErrorFor(request => request.PhoneNumber)
+            .WithErrorMessage("Phone Number cannot contain any letters");
     }
 }

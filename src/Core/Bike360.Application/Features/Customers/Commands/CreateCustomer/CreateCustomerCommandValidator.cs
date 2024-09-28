@@ -9,9 +9,6 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
 
     public CreateCustomerCommandValidator(ICustomerRepository customerRepository)
     {
-        //TODO
-        //- add proper validation for e-mail and phone number to keep working properly 
-
         RuleFor(p => p.FirstName)
             .NotEmpty()
                 .WithMessage("{PropertyName} is required");
@@ -23,12 +20,10 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
         RuleFor(p => p.EmailAddress)
             .NotEmpty()
                 .WithMessage("{PropertyName} is required")
-            .EmailAddress()
-                .WithMessage("{PropertyValue} is not a valid Email");
-
-        RuleFor(q => q)
-            .MustAsync(CustomerDataUnique)
-                .WithMessage("Given customer already exists");
+            .Matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
+                .WithMessage("{PropertyValue} is not a valid Email")
+            .MustAsync(CustomerEmailUnique)
+                .WithMessage("Customer with given e-mail already exists");
 
         RuleFor(p => p.DateOfBirth)
            .NotEmpty()
@@ -36,7 +31,9 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
 
         RuleFor(p => p.PhoneNumber)
             .NotEmpty()
-                .WithMessage("{PropertyName} is required");
+                .WithMessage("{PropertyName} is required")
+            .Matches("^[^a-zA-Z]*$")
+                .WithMessage("{PropertyName} cannot contain any letters");
 
         RuleFor(p => p.Address)
           .NotNull()
@@ -46,13 +43,10 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
         _customerRepository = customerRepository;
     }
 
-    private Task<bool> CustomerDataUnique(
-        CreateCustomerCommand command,
+    private Task<bool> CustomerEmailUnique(
+        string email,
         CancellationToken token)
     {
-        return _customerRepository.IsCustomerUnique(
-            command.FirstName,
-            command.LastName,
-            command.EmailAddress);
+        return _customerRepository.IsEmailUnique(email);
     }
 }

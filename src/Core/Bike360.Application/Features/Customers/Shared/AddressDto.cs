@@ -1,9 +1,7 @@
-﻿namespace Bike360.Application.Features.Shared;
+﻿namespace Bike360.Application.Features.Customers.Shared;
 
 public class AddressDto
 {
-    //TODO
-    //don't need to keep it in shared - can be moved I think do separate
     public int Id { get; set; }
     public string Country { get; set; }
     public string Voivodeship { get; set; }

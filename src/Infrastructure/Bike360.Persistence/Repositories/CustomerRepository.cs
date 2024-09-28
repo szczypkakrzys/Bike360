@@ -11,18 +11,10 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
     {
     }
 
-    //TODO
-    //or just check if e-mail is unique :)
-    public async Task<bool> IsCustomerUnique(
-         string firstName,
-         string lastName,
-         string emailAddress)
+    public async Task<bool> IsEmailUnique(string emailAddress)
     {
         var result = await _context.Customers
-            .AnyAsync(q =>
-                q.FirstName == firstName &&
-                q.LastName == lastName &&
-                q.EmailAddress == emailAddress);
+            .AnyAsync(q => q.EmailAddress == emailAddress);
 
         return !result;
     }

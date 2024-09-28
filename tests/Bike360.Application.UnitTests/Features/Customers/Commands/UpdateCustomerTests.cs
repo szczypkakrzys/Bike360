@@ -2,7 +2,7 @@
 using Bike360.Application.Contracts.Persistence;
 using Bike360.Application.Exceptions;
 using Bike360.Application.Features.Customers.Commands.UpdateCustomer;
-using Bike360.Application.Features.Shared;
+using Bike360.Application.Features.Customers.Shared;
 using Bike360.Domain;
 using FluentAssertions;
 using FluentValidation.TestHelper;
@@ -55,7 +55,7 @@ public class UpdateCustomerTests
 
         var customerToUpdate = new Customer();
 
-        _customerRepository.IsCustomerUnique(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(true);
+        _customerRepository.IsEmailUnique(Arg.Any<string>()).Returns(true);
         _customerRepository.GetByIdAsync(customerId).Returns(customerToUpdate);
         _customerRepository.UpdateAsync(customerToUpdate).Returns(Task.CompletedTask);
         _mapper.Map<Customer>(request).Returns(customerToUpdate);
@@ -153,7 +153,7 @@ public class UpdateCustomerTests
 
         var customerToUpdate = new Customer();
 
-        _customerRepository.IsCustomerUnique(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(true);
+        _customerRepository.IsEmailUnique(Arg.Any<string>()).Returns(true);
         _customerRepository.GetByIdAsync(customerId).Returns(customerToUpdate);
 
         // Act

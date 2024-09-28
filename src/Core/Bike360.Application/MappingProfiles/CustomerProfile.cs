@@ -3,7 +3,7 @@ using Bike360.Application.Features.Customers.Commands.CreateCustomer;
 using Bike360.Application.Features.Customers.Commands.UpdateCustomer;
 using Bike360.Application.Features.Customers.Queries.GetAllCustomers;
 using Bike360.Application.Features.Customers.Queries.GetCustomerDetails;
-using Bike360.Application.Features.Shared;
+using Bike360.Application.Features.Customers.Shared;
 using Bike360.Application.MappingProfiles.Customs;
 using Bike360.Domain;
 
@@ -31,8 +31,6 @@ public class CustomerProfile : Profile
             .ForMember(dest => dest.TimeCreatedInUtc, opt => opt.Ignore())
             .ForMember(dest => dest.TimeLastModifiedInUtc, opt => opt.Ignore());
         CreateMap<Address, AddressDto>().ReverseMap();
-        //TODO
-        // probably don't use it anymore
         CreateMap<DateTime, DateOnly>().ConvertUsing(new DateTimeToDateOnlyConverter());
     }
 }
