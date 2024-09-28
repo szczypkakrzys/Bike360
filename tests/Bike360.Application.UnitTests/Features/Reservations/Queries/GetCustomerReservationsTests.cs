@@ -38,8 +38,8 @@ public class GetCustomerReservationsTests
         {
             new()
             {
-                DateTimeStart = new DateTime(2024, 01, 01),
-                DateTimeEnd = new DateTime(2024, 01, 10),
+                DateTimeStartInUtc = new DateTime(2024, 01, 01),
+                DateTimeEndInUtc = new DateTime(2024, 01, 10),
                 Cost = 2000,
                 Comments = "Some comment",
                 Status = "Some status"

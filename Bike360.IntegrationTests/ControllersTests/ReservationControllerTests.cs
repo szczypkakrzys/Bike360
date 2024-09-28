@@ -52,7 +52,7 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationErrors.Should().NotBeNull();
         validationErrors.Errors.Should().ContainKeys(
-            nameof(CreateReservationCommand.DateTimeStart),
+            nameof(CreateReservationCommand.DateTimeStartInUtc),
             nameof(CreateReservationCommand.NumberOfDays),
             nameof(CreateReservationCommand.CustomerId),
             nameof(CreateReservationCommand.BikesIds));
@@ -64,7 +64,7 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         // Arrange
         var createRequest = new CreateReservationCommand
         {
-            DateTimeStart = DateTime.UtcNow.AddHours(5),
+            DateTimeStartInUtc = DateTime.UtcNow.AddHours(5),
             NumberOfDays = 5,
             CustomerId = 1,
             BikesIds = new[] { 1, 2 }
@@ -90,7 +90,7 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         // Arrange
         var createRequest = new CreateReservationCommand
         {
-            DateTimeStart = DateTime.UtcNow.AddYears(1),
+            DateTimeStartInUtc = DateTime.UtcNow.AddYears(1),
             NumberOfDays = 5,
             CustomerId = 999,
             BikesIds = new[] { 1, 2 }
@@ -112,7 +112,7 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         // Arrange
         var createRequest = new CreateReservationCommand
         {
-            DateTimeStart = DateTime.UtcNow.AddDays(-5),
+            DateTimeStartInUtc = DateTime.UtcNow.AddDays(-5),
             NumberOfDays = 0,
             CustomerId = 999,
             BikesIds = new[] { 1, 2 }
@@ -126,7 +126,7 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationErrors.Should().NotBeNull();
         validationErrors.Errors.Should().ContainKeys(
-           nameof(CreateReservationCommand.DateTimeStart),
+           nameof(CreateReservationCommand.DateTimeStartInUtc),
            nameof(CreateReservationCommand.NumberOfDays));
     }
 
@@ -139,8 +139,8 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         {
             new()
             {
-                DateTimeStart = reservationEntity.DateTimeStartInUtc,
-                DateTimeEnd = reservationEntity.DateTimeEndInUtc,
+                DateTimeStartInUtc = reservationEntity.DateTimeStartInUtc,
+                DateTimeEndInUtc = reservationEntity.DateTimeEndInUtc,
                 Cost = reservationEntity.Cost,
                 Comments = reservationEntity.Comments,
                 Status = reservationEntity.Status
@@ -177,8 +177,8 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
 
         var expectedReservationData = new ReservationDetailsDto
         {
-            DateTimeStart = reservationData.DateTimeStartInUtc,
-            DateTimeEnd = reservationData.DateTimeEndInUtc,
+            DateTimeStartInUtc = reservationData.DateTimeStartInUtc,
+            DateTimeEndInUtc = reservationData.DateTimeEndInUtc,
             Cost = reservationData.Cost,
             Status = reservationData.Status,
             Comments = reservationData.Comments,
@@ -247,7 +247,7 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
     {
         // Arrange
         var reservationData = DataFixture.CreateTestReservationData;
-        reservationData.DateTimeStart = reservationData.DateTimeStart.AddDays(20);
+        reservationData.DateTimeStartInUtc = reservationData.DateTimeStartInUtc.AddDays(20);
 
         var reservationCreateResponse = await _httpClient.PostAsJsonAsync(ApiRoutes.Reservations, reservationData);
 

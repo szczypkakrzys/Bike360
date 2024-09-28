@@ -46,12 +46,12 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
 
         var reservationBikesEntities = await _bikeRepository.GetByIdsAsync(request.BikesIds);
 
-        var reservationTimeEnd = CalculateReservationTimeEnd(request.DateTimeStart, request.NumberOfDays);
+        var reservationTimeEnd = CalculateReservationTimeEnd(request.DateTimeStartInUtc, request.NumberOfDays);
 
         await ValidateBikesAvailability(
             reservationBikesEntities,
             request.BikesIds,
-            request.DateTimeStart,
+            request.DateTimeStartInUtc,
             reservationTimeEnd);
 
         var reservationToCreate = PrepareReservationEntity(
@@ -98,7 +98,7 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
             reservation.Bikes.Add(bike);
         }
 
-        reservation.DateTimeEndInUtc = CalculateReservationTimeEnd(request.DateTimeStart, request.NumberOfDays);
+        reservation.DateTimeEndInUtc = CalculateReservationTimeEnd(request.DateTimeStartInUtc, request.NumberOfDays);
         reservation.Customer = customer;
         reservation.Cost = _reservationService.CalculateReservationCost(reservationBikesEntities, request.NumberOfDays);
         reservation.Status = ReservationStatus.Pending;

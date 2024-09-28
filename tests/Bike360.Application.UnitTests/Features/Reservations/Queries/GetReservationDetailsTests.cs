@@ -36,8 +36,8 @@ public class GetReservationDetailsTests
         };
         var reservationDetailsDto = new ReservationDetailsDto
         {
-            DateTimeStart = new DateTime(2024, 01, 01),
-            DateTimeEnd = new DateTime(2024, 01, 10),
+            DateTimeStartInUtc = new DateTime(2024, 01, 01),
+            DateTimeEndInUtc = new DateTime(2024, 01, 10),
             Cost = 2000,
             Status = "Status",
             CustomerData = new CustomerDto

@@ -10,7 +10,7 @@ public class CreateReservationCommandValidator : AbstractValidator<CreateReserva
            .NotEmpty()
                .WithMessage("{PropertyName} is required");
 
-        RuleFor(p => p.DateTimeStart)
+        RuleFor(p => p.DateTimeStartInUtc)
             .NotEmpty()
                 .WithMessage("Start time is required")
             .GreaterThanOrEqualTo(DateTime.Now)

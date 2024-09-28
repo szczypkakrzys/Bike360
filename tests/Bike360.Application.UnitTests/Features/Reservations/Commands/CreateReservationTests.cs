@@ -45,7 +45,7 @@ public class CreateReservationTests
 
         var request = new CreateReservationCommand
         {
-            DateTimeStart = DateTime.Now.AddDays(1),
+            DateTimeStartInUtc = DateTime.Now.AddDays(1),
             NumberOfDays = 1,
             Comments = "Reservation comments",
             CustomerId = 1,
@@ -59,7 +59,7 @@ public class CreateReservationTests
         _bikeRepository.GetByIdsAsync(request.BikesIds).Returns(reservationBikes);
 
         var successResult = new AvailabilityResult { AreAvailable = true, ErrorMessage = string.Empty };
-        _reservationService.CheckBikesAvailability(request.BikesIds, request.DateTimeStart, request.DateTimeStart.AddDays(request.NumberOfDays)).Returns(successResult);
+        _reservationService.CheckBikesAvailability(request.BikesIds, request.DateTimeStartInUtc, request.DateTimeStartInUtc.AddDays(request.NumberOfDays)).Returns(successResult);
 
         _mapper.Map<Reservation>(request).Returns(reservationToCreate);
         _reservationRepository.CreateAsync(reservationToCreate).Returns(Task.CompletedTask);
@@ -77,7 +77,7 @@ public class CreateReservationTests
         // Arrange
         var request = new CreateReservationCommand
         {
-            DateTimeStart = DateTime.Now.AddDays(1),
+            DateTimeStartInUtc = DateTime.Now.AddDays(1),
             NumberOfDays = 1,
             Comments = "Reservation comments",
             CustomerId = 1,
@@ -107,7 +107,7 @@ public class CreateReservationTests
         // Arrange
         var request = new CreateReservationCommand
         {
-            DateTimeStart = DateTime.Now.AddDays(1),
+            DateTimeStartInUtc = DateTime.Now.AddDays(1),
             NumberOfDays = 1,
             Comments = "Reservation comments",
             CustomerId = 1,
@@ -121,7 +121,7 @@ public class CreateReservationTests
         _bikeRepository.GetByIdsAsync(request.BikesIds).Returns(reservationBikes);
 
         var availabilityResult = new AvailabilityResult { AreAvailable = false, ErrorMessage = "Bikes with IDs: ... are not available in given period" };
-        _reservationService.CheckBikesAvailability(request.BikesIds, request.DateTimeStart, request.DateTimeStart.AddDays(request.NumberOfDays)).Returns(availabilityResult);
+        _reservationService.CheckBikesAvailability(request.BikesIds, request.DateTimeStartInUtc, request.DateTimeStartInUtc.AddDays(request.NumberOfDays)).Returns(availabilityResult);
 
         // Act
         Func<Task> act = async () => await _handler.Handle(request, CancellationToken.None);
@@ -137,7 +137,7 @@ public class CreateReservationTests
         // Arrange
         var request = new CreateReservationCommand
         {
-            DateTimeStart = DateTime.Now.AddDays(1),
+            DateTimeStartInUtc = DateTime.Now.AddDays(1),
             NumberOfDays = 1,
             Comments = "Reservation comments",
             CustomerId = 1,
@@ -172,7 +172,7 @@ public class CreateReservationTests
 
         result.ShouldHaveValidationErrorFor(request => request.CustomerId)
             .WithErrorMessage("Customer Id is required");
-        result.ShouldHaveValidationErrorFor(request => request.DateTimeStart)
+        result.ShouldHaveValidationErrorFor(request => request.DateTimeStartInUtc)
            .WithErrorMessage("Start time is required");
         result.ShouldHaveValidationErrorFor(request => request.NumberOfDays)
            .WithErrorMessage("Number of days is required");
@@ -186,7 +186,7 @@ public class CreateReservationTests
         // Arrange
         var request = new CreateReservationCommand
         {
-            DateTimeStart = DateTime.Now.AddDays(1),
+            DateTimeStartInUtc = DateTime.Now.AddDays(1),
             NumberOfDays = -4,
             Comments = "Reservation comments",
             CustomerId = 1,
@@ -213,7 +213,7 @@ public class CreateReservationTests
         // Arrange
         var request = new CreateReservationCommand
         {
-            DateTimeStart = DateTime.Now.AddHours(-1),
+            DateTimeStartInUtc = DateTime.Now.AddHours(-1),
             NumberOfDays = 1,
             Comments = "Reservation comments",
             CustomerId = 1,
@@ -230,7 +230,7 @@ public class CreateReservationTests
 
         await _reservationRepository.DidNotReceive().CreateAsync(Arg.Any<Reservation>());
 
-        result.ShouldHaveValidationErrorFor(request => request.DateTimeStart)
+        result.ShouldHaveValidationErrorFor(request => request.DateTimeStartInUtc)
             .WithErrorMessage("Start time must be after current time.");
     }
 }
