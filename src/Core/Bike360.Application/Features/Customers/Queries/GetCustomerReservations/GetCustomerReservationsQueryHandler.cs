@@ -5,7 +5,7 @@ using Bike360.Domain;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Bike360.Application.Features.Reservations.Queries.GetCustomerReservations;
+namespace Bike360.Application.Features.Customers.Queries.GetCustomerReservations;
 
 public class GetCustomerReservationsQueryHandler : IRequestHandler<GetCustomerReservationsQuery, IEnumerable<ReservationDto>>
 {

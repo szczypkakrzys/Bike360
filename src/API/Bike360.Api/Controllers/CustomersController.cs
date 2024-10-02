@@ -3,6 +3,7 @@ using Bike360.Application.Features.Customers.Commands.DeleteCustomer;
 using Bike360.Application.Features.Customers.Commands.UpdateCustomer;
 using Bike360.Application.Features.Customers.Queries.GetAllCustomers;
 using Bike360.Application.Features.Customers.Queries.GetCustomerDetails;
+using Bike360.Application.Features.Customers.Queries.GetCustomerReservations;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -63,5 +64,12 @@ public class CustomersController : Controller
         var command = new DeleteCustomerCommand { Id = id };
         await _mediator.Send(command);
         return NoContent();
+    }
+
+    [HttpGet("{id}/reservations")]
+    public async Task<ActionResult<List<ReservationDto>>> GetCustomerReservations(int id)
+    {
+        var customerReservations = await _mediator.Send(new GetCustomerReservationsQuery(id));
+        return Ok(customerReservations);
     }
 }

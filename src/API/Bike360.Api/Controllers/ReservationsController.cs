@@ -1,7 +1,6 @@
 ﻿using Bike360.Application.Features.Reservations.Commands.CreateReservation;
 using Bike360.Application.Features.Reservations.Commands.DeleteReservations;
 using Bike360.Application.Features.Reservations.Commands.UpdateReservationStatus;
-using Bike360.Application.Features.Reservations.Queries.GetCustomerReservations;
 using Bike360.Application.Features.Reservations.Queries.GetReservationDetails;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -25,13 +24,6 @@ public class ReservationsController : Controller
         var reservationDetails = await _mediator.Send(new GetReservationDetailsQuery(id));
 
         return Ok(reservationDetails);
-    }
-
-    [HttpGet("customers/{id}/reservations")]
-    public async Task<ActionResult<List<ReservationDto>>> GetCustomerReservations(int id)
-    {
-        var customerReservations = await _mediator.Send(new GetCustomerReservationsQuery(id));
-        return Ok(customerReservations);
     }
 
     [HttpPost]

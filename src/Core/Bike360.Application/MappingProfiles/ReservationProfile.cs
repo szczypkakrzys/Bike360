@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Bike360.Application.Features.Customers.Queries.GetCustomerReservations;
 using Bike360.Application.Features.Reservations.Commands.CreateReservation;
-using Bike360.Application.Features.Reservations.Queries.GetCustomerReservations;
 using Bike360.Application.Features.Reservations.Queries.GetReservationDetails;
 using Bike360.Domain;
 

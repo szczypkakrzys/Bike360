@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Bike360.Application.Contracts.Persistence;
 using Bike360.Application.Exceptions;
-using Bike360.Application.Features.Reservations.Queries.GetCustomerReservations;
+using Bike360.Application.Features.Customers.Queries.GetCustomerReservations;
 using Bike360.Domain;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;

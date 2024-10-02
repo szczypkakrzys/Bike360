@@ -25,7 +25,13 @@ public class UpdateReservationStatusCommandValidator : AbstractValidator<UpdateR
 
     private readonly string[] AvailableStatuses =
         [
-            ReservationStatus.Pending
+            ReservationStatus.Pending,
+            ReservationStatus.InProgress,
+            ReservationStatus.Returned,
+            ReservationStatus.Completed,
+            ReservationStatus.Cancelled,
+            ReservationStatus.Expired,
+            ReservationStatus.Overdue
         ];
 
     private string StatusMessage()

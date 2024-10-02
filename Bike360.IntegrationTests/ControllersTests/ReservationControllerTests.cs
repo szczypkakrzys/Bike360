@@ -2,7 +2,6 @@
 using Bike360.Application.Features.Reservations.Commands.CreateReservation;
 using Bike360.Application.Features.Reservations.Commands.UpdateReservationStatus;
 using Bike360.Application.Features.Reservations.Constants;
-using Bike360.Application.Features.Reservations.Queries.GetCustomerReservations;
 using Bike360.Application.Features.Reservations.Queries.GetReservationDetails;
 using Bike360.IntegrationTests.Helpers;
 using Bike360.IntegrationTests.TestFixtures;
@@ -131,42 +130,6 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
     }
 
     [Fact]
-    public async Task GetCustomerReservation_CustomerExists_ShouldReturnReservationsList()
-    {
-        // Arrange
-        var reservationEntity = DataFixture.SampleReservations[0];
-        var expectedList = new List<ReservationDto>
-        {
-            new()
-            {
-                DateTimeStartInUtc = reservationEntity.DateTimeStartInUtc,
-                DateTimeEndInUtc = reservationEntity.DateTimeEndInUtc,
-                Cost = reservationEntity.Cost,
-                Comments = reservationEntity.Comments,
-                Status = reservationEntity.Status
-            }
-        };
-
-        // Act
-        var response = await _httpClient.GetAsync(ApiRoutes.UserReservations.ById(1));
-        var result = await response.Content.ReadFromJsonAsync<List<ReservationDto>>();
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        result.Should().BeEquivalentTo(expectedList);
-    }
-
-    [Fact]
-    public async Task GetCustomerReservation_CustomerDoesNotExist_ShouldReturnReservationsList_ShouldReturnNotFound()
-    {
-        // Act 
-        var response = await _httpClient.GetAsync(ApiRoutes.UserReservations.ById(NotExistingId));
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-    }
-
-    [Fact]
     public async Task GetById_ReservationExists_ShouldReturnReservationDetails()
     {
         // Arrange
@@ -276,13 +239,13 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         };
 
         // Act
-        var response = await _httpClient.PatchAsJsonAsync(ApiRoutes.Reservations, request);
+        var response = await _httpClient.PatchAsJsonAsync(ApiRoutes.ReservationStatus, request);
 
         // Assert 
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         var updatedReservationData = await _httpClient.GetFromJsonAsync<ReservationDetailsDto>(ApiRoutes.Reservations.ById(request.Id));
-        updatedReservationData.Status.Should().Be(request.Status);
+        updatedReservationData.Status.Should().Be(nameof(request.Status));
     }
 
     [Fact]
@@ -296,7 +259,7 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         };
 
         // Act
-        var response = await _httpClient.PatchAsJsonAsync(ApiRoutes.Reservations, request);
+        var response = await _httpClient.PatchAsJsonAsync(ApiRoutes.ReservationStatus, request);
 
         // Assert 
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -309,7 +272,7 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         var request = new UpdateReservationStatusCommand();
 
         // Act
-        var response = await _httpClient.PatchAsJsonAsync(ApiRoutes.Reservations, request);
+        var response = await _httpClient.PatchAsJsonAsync(ApiRoutes.ReservationStatus, request);
         var validationErrors = await response.Content.ReadFromJsonAsync<CustomProblemDetails>();
 
         // Assert 
@@ -331,7 +294,7 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         };
 
         // Act
-        var response = await _httpClient.PatchAsJsonAsync(ApiRoutes.Reservations, request);
+        var response = await _httpClient.PatchAsJsonAsync(ApiRoutes.ReservationStatus, request);
         var validationErrors = await response.Content.ReadFromJsonAsync<CustomProblemDetails>();
 
         // Assert 

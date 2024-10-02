@@ -1,4 +1,4 @@
-﻿namespace Bike360.Application.Features.Reservations.Queries.GetCustomerReservations;
+﻿namespace Bike360.Application.Features.Customers.Queries.GetCustomerReservations;
 
 public class ReservationDto
 {

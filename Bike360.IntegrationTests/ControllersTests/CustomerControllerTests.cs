@@ -3,6 +3,7 @@ using Bike360.Application.Features.Customers.Commands.CreateCustomer;
 using Bike360.Application.Features.Customers.Commands.UpdateCustomer;
 using Bike360.Application.Features.Customers.Queries.GetAllCustomers;
 using Bike360.Application.Features.Customers.Queries.GetCustomerDetails;
+using Bike360.Application.Features.Customers.Queries.GetCustomerReservations;
 using Bike360.Application.Features.Customers.Shared;
 using Bike360.Domain;
 using Bike360.IntegrationTests.Helpers;
@@ -271,5 +272,42 @@ public class CustomerControllerTests : IClassFixture<IntegrationTestsWebApplicat
 
         var getResponse = await _httpClient.GetAsync(ApiRoutes.Customers.ById(customerId));
         getResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task GetCustomerReservation_CustomerExists_ShouldReturnReservationsList()
+    {
+        // Arrange
+        var reservationEntity = DataFixture.SampleReservations[0];
+        var expectedList = new List<ReservationDto>
+        {
+            new()
+            {
+                Id = 1,
+                DateTimeStartInUtc = reservationEntity.DateTimeStartInUtc,
+                DateTimeEndInUtc = reservationEntity.DateTimeEndInUtc,
+                Cost = reservationEntity.Cost,
+                Comments = reservationEntity.Comments,
+                Status = reservationEntity.Status
+            }
+        };
+
+        // Act
+        var response = await _httpClient.GetAsync(ApiRoutes.CustomerReservations(1));
+        var result = await response.Content.ReadFromJsonAsync<List<ReservationDto>>();
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        result.Should().BeEquivalentTo(expectedList);
+    }
+
+    [Fact]
+    public async Task GetCustomerReservation_CustomerDoesNotExist_ShouldReturnReservationsList_ShouldReturnNotFound()
+    {
+        // Act 
+        var response = await _httpClient.GetAsync(ApiRoutes.CustomerReservations(NotExistingId));
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }
