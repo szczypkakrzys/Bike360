@@ -115,6 +115,6 @@ public class UpdateReservationStatusTests
 
         result.ShouldNotHaveValidationErrorFor(request => request.Id);
         result.ShouldHaveValidationErrorFor(request => request.Status)
-            .WithErrorMessage("The status value is not valid. It must be one of the following: Pending.");
+            .WithErrorMessage("The status value is not valid. It must be one of the following: Pending, In progress, Returned, Completed, Cancelled, Expired, Overdue.");
     }
 }
