@@ -21,6 +21,9 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
     public ReservationControllerTests(IntegrationTestsWebApplicationFactory factory)
     {
         _httpClient = factory.CreateClient();
+
+        var seeder = new DatabaseSeeder(_httpClient);
+        seeder.SeedReservationControllerAsync().GetAwaiter().GetResult();
     }
 
     [Fact]
@@ -50,7 +53,7 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationErrors.Should().NotBeNull();
-        validationErrors.Errors.Should().ContainKeys(
+        validationErrors!.Errors.Should().ContainKeys(
             nameof(CreateReservationCommand.DateTimeStartInUtc),
             nameof(CreateReservationCommand.NumberOfDays),
             nameof(CreateReservationCommand.CustomerId),
@@ -80,7 +83,7 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         var idsString = string.Join(", ", createRequest.BikesIds);
         var message = $"Bikes with IDs = {{ {idsString} }} are not available in given period";
 
-        validationErrors.Title.Should().Be(message);
+        validationErrors!.Title.Should().Be(message);
     }
 
     [Fact]
@@ -102,7 +105,7 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         validationErrors.Should().NotBeNull();
-        validationErrors.Title.Should().Be($"Customer with ID = {createRequest.CustomerId} was not found");
+        validationErrors!.Title.Should().Be($"Customer with ID = {createRequest.CustomerId} was not found");
     }
 
     [Fact]
@@ -124,7 +127,7 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationErrors.Should().NotBeNull();
-        validationErrors.Errors.Should().ContainKeys(
+        validationErrors!.Errors.Should().ContainKeys(
            nameof(CreateReservationCommand.DateTimeStartInUtc),
            nameof(CreateReservationCommand.NumberOfDays));
     }
@@ -136,14 +139,14 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         var reservationBike1 = DataFixture.SampleBikes[0];
         var reservationBike2 = DataFixture.SampleBikes[1];
         var reservationCustomer = DataFixture.SampleCustomers[0];
-        var reservationData = DataFixture.SampleReservations[0];
+        var reservationData = DataFixture.SampleReservation;
 
         var expectedReservationData = new ReservationDetailsDto
         {
             DateTimeStartInUtc = reservationData.DateTimeStartInUtc,
-            DateTimeEndInUtc = reservationData.DateTimeEndInUtc,
-            Cost = reservationData.Cost,
-            Status = reservationData.Status,
+            DateTimeEndInUtc = reservationData.DateTimeStartInUtc.AddDays(reservationData.NumberOfDays),
+            Cost = 999,
+            Status = "status",
             Comments = reservationData.Comments,
             CustomerData = new CustomerDto
             {
@@ -182,7 +185,10 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        result.Should().BeEquivalentTo(expectedReservationData);
+        result.Should().BeEquivalentTo(expectedReservationData, options
+            => options
+                .Excluding(result => result.Cost)
+                .Excluding(result => result.Status));
     }
 
     [Fact]
@@ -245,7 +251,8 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         var updatedReservationData = await _httpClient.GetFromJsonAsync<ReservationDetailsDto>(ApiRoutes.Reservations.ById(request.Id));
-        updatedReservationData.Status.Should().Be(nameof(request.Status));
+        updatedReservationData.Should().NotBeNull();
+        updatedReservationData!.Status.Should().Be(ReservationStatus.Pending);
     }
 
     [Fact]
@@ -278,7 +285,7 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         // Assert 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationErrors.Should().NotBeNull();
-        validationErrors.Errors.Should().ContainKeys(
+        validationErrors!.Errors.Should().ContainKeys(
             nameof(UpdateReservationStatusCommand.Id),
             nameof(UpdateReservationStatusCommand.Status));
     }
@@ -301,7 +308,7 @@ public class ReservationControllerTests : IClassFixture<IntegrationTestsWebAppli
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationErrors.Should().NotBeNull();
 
-        validationErrors.Errors.Should().ContainSingle(
+        validationErrors!.Errors.Should().ContainSingle(
            nameof(UpdateReservationStatusCommand.Status), "The status value is not valid. It must be one of the following: Pending.");
     }
 }

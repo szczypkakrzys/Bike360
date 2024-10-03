@@ -23,6 +23,9 @@ public class BikeControllerTests : IClassFixture<IntegrationTestsWebApplicationF
     public BikeControllerTests(IntegrationTestsWebApplicationFactory factory)
     {
         _httpClient = factory.CreateClient();
+
+        var seeder = new DatabaseSeeder(_httpClient);
+        seeder.SeedBikeControllerAsync().GetAwaiter().GetResult();
     }
 
     [Fact]
@@ -35,7 +38,7 @@ public class BikeControllerTests : IClassFixture<IntegrationTestsWebApplicationF
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         result.Should().NotBeNullOrEmpty();
-        result.Count.Should().BeGreaterThanOrEqualTo(2);
+        result!.Count.Should().BeGreaterThanOrEqualTo(2);
     }
 
     [Fact]
@@ -63,7 +66,6 @@ public class BikeControllerTests : IClassFixture<IntegrationTestsWebApplicationF
 
         result.Should().BeEquivalentTo(bikeData, options
             => options
-                .Excluding(bike => bike.Id)
                 .ExcludingMissingMembers());
     }
 
@@ -94,7 +96,7 @@ public class BikeControllerTests : IClassFixture<IntegrationTestsWebApplicationF
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationErrors.Should().NotBeNull();
-        validationErrors.Errors.Should().ContainKeys(
+        validationErrors!.Errors.Should().ContainKeys(
             nameof(CreateBikeCommand.Brand),
             nameof(CreateBikeCommand.Type),
             nameof(CreateBikeCommand.Model),
@@ -117,7 +119,7 @@ public class BikeControllerTests : IClassFixture<IntegrationTestsWebApplicationF
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationErrors.Should().NotBeNull();
-        validationErrors.Errors.Should().ContainSingle(
+        validationErrors!.Errors.Should().ContainSingle(
             nameof(CreateBikeCommand.RentCostPerDay), "Rent cost must be greater than 0");
     }
 
@@ -185,7 +187,7 @@ public class BikeControllerTests : IClassFixture<IntegrationTestsWebApplicationF
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationErrors.Should().NotBeNull();
-        validationErrors.Errors.Should().ContainKeys(
+        validationErrors!.Errors.Should().ContainKeys(
             nameof(UpdateBikeCommand.Brand),
             nameof(UpdateBikeCommand.Type),
             nameof(UpdateBikeCommand.Model),
@@ -228,10 +230,12 @@ public class BikeControllerTests : IClassFixture<IntegrationTestsWebApplicationF
     public async Task GetBikeReservedDays_ValidRequest_ShouldReturnDateRangeList()
     {
         // Arrange
-        var timeStart = DataFixture.SampleReservations[0].DateTimeStartInUtc;
+        var timeStart = DataFixture.SampleReservation.DateTimeStartInUtc;
         var timeEnd = timeStart.AddMonths(1);
         var expectedList = new List<DateRange>();
-        var expectedDate = new DateRange(timeStart, DataFixture.SampleReservations[0].DateTimeEndInUtc);
+        var expectedDate = new DateRange(
+            timeStart,
+            timeStart.AddDays(DataFixture.SampleReservation.NumberOfDays));
         expectedList.Add(expectedDate);
 
         var timeFormat = "yyyy-MM-ddTHH:mm:ss";
@@ -266,8 +270,9 @@ public class BikeControllerTests : IClassFixture<IntegrationTestsWebApplicationF
         var validationErrors = await response.Content.ReadFromJsonAsync<CustomProblemDetails>();
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest); validationErrors.Should().NotBeNull();
-        validationErrors.Errors.Should().ContainSingle(
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        validationErrors.Should().NotBeNull();
+        validationErrors!.Errors.Should().ContainSingle(
             nameof(GetBikeReservedTimeQuery.TimeStart), "Start time must be before time end.");
     }
 }

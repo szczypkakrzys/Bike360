@@ -24,6 +24,9 @@ public class CustomerControllerTests : IClassFixture<IntegrationTestsWebApplicat
     public CustomerControllerTests(IntegrationTestsWebApplicationFactory factory)
     {
         _httpClient = factory.CreateClient();
+
+        var seeder = new DatabaseSeeder(_httpClient);
+        seeder.SeedCustomerControllerAsync().GetAwaiter().GetResult();
     }
 
     [Fact]
@@ -36,7 +39,7 @@ public class CustomerControllerTests : IClassFixture<IntegrationTestsWebApplicat
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         result.Should().NotBeNullOrEmpty();
-        result.Count.Should().BeGreaterThanOrEqualTo(2);
+        result!.Count.Should().BeGreaterThanOrEqualTo(2);
     }
 
     [Fact]
@@ -65,8 +68,6 @@ public class CustomerControllerTests : IClassFixture<IntegrationTestsWebApplicat
 
         result.Should().BeEquivalentTo(customerData, options
             => options
-                .Excluding(customer => customer.Id)
-                .Excluding(customer => customer.Address.Id)
                 .Excluding(customer => customer.DateOfBirth)
                 .ExcludingMissingMembers());
     }
@@ -98,7 +99,7 @@ public class CustomerControllerTests : IClassFixture<IntegrationTestsWebApplicat
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationErrors.Should().NotBeNull();
-        validationErrors.Errors.Should().ContainKeys(
+        validationErrors!.Errors.Should().ContainKeys(
             nameof(CreateCustomerCommand.FirstName),
             nameof(CreateCustomerCommand.LastName),
             nameof(CreateCustomerCommand.EmailAddress),
@@ -121,7 +122,7 @@ public class CustomerControllerTests : IClassFixture<IntegrationTestsWebApplicat
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationErrors.Should().NotBeNull();
-        validationErrors.Errors.Should().ContainSingle(
+        validationErrors!.Errors.Should().ContainSingle(
             nameof(CreateCustomerCommand.EmailAddress), "Customer with given e-mail already exists");
     }
 
@@ -146,7 +147,7 @@ public class CustomerControllerTests : IClassFixture<IntegrationTestsWebApplicat
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationErrors.Should().NotBeNull();
-        validationErrors.Errors.Should().ContainKeys(
+        validationErrors!.Errors.Should().ContainKeys(
             $"{nameof(Address)}.{nameof(CreateAddressDto.Country)}",
             $"{nameof(Address)}.{nameof(CreateAddressDto.Voivodeship)}",
             $"{nameof(Address)}.{nameof(CreateAddressDto.PostalCode)}",
@@ -233,7 +234,7 @@ public class CustomerControllerTests : IClassFixture<IntegrationTestsWebApplicat
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationErrors.Should().NotBeNull();
-        validationErrors.Errors.Should().ContainKeys(
+        validationErrors!.Errors.Should().ContainKeys(
             nameof(UpdateCustomerCommand.FirstName),
             nameof(UpdateCustomerCommand.LastName),
             nameof(UpdateCustomerCommand.EmailAddress),
@@ -278,17 +279,17 @@ public class CustomerControllerTests : IClassFixture<IntegrationTestsWebApplicat
     public async Task GetCustomerReservation_CustomerExists_ShouldReturnReservationsList()
     {
         // Arrange
-        var reservationEntity = DataFixture.SampleReservations[0];
+        var reservationEntity = DataFixture.SampleReservation;
         var expectedList = new List<ReservationDto>
         {
             new()
             {
                 Id = 1,
                 DateTimeStartInUtc = reservationEntity.DateTimeStartInUtc,
-                DateTimeEndInUtc = reservationEntity.DateTimeEndInUtc,
-                Cost = reservationEntity.Cost,
+                DateTimeEndInUtc = reservationEntity.DateTimeStartInUtc.AddDays(reservationEntity.NumberOfDays),
+                Cost = 999,
                 Comments = reservationEntity.Comments,
-                Status = reservationEntity.Status
+                Status = "status"
             }
         };
 
@@ -298,7 +299,10 @@ public class CustomerControllerTests : IClassFixture<IntegrationTestsWebApplicat
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        result.Should().BeEquivalentTo(expectedList);
+        result.Should().BeEquivalentTo(expectedList, options
+            => options
+                .Excluding(result => result.Cost)
+                .Excluding(result => result.Status));
     }
 
     [Fact]

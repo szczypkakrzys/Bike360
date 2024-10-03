@@ -1,17 +1,12 @@
 ﻿using Bike360.Application.Features.Bikes.Commands.CreateBike;
 using Bike360.Application.Features.Customers.Commands.CreateCustomer;
 using Bike360.Application.Features.Reservations.Commands.CreateReservation;
-using Bike360.Domain;
 
 namespace Bike360.IntegrationTests.Tests;
 
 public static class DataFixture
 {
-    // TODO: Review
-    // Currently all sample data is stored here
-    // Important: Do not modify or delete the first object in any collection, as these are used in the GetById method tests :)
-
-    public static readonly List<Customer> SampleCustomers =
+    public static readonly List<CreateCustomerCommand> SampleCustomers =
     [
         new()
         {
@@ -19,8 +14,8 @@ public static class DataFixture
             LastName = "LastName",
             EmailAddress = "email@address.com",
             PhoneNumber = "1234567890",
-            DateOfBirth = new DateOnly(1999, 01, 01),
-            Address = new Address
+            DateOfBirth = new DateTime(1999, 01, 01),
+            Address = new CreateAddressDto
             {
                 Country = "Country",
                 Voivodeship = "Voivodeship",
@@ -36,8 +31,8 @@ public static class DataFixture
             LastName = "LastName 2",
             EmailAddress = "email2@address.com",
             PhoneNumber = "1234567890",
-            DateOfBirth = new DateOnly(1999, 01, 01),
-            Address = new Address
+            DateOfBirth = new DateTime(1999, 01, 01),
+            Address = new CreateAddressDto
             {
                 Country = "Country",
                 Voivodeship = "Voivodeship",
@@ -49,7 +44,7 @@ public static class DataFixture
         }
     ];
 
-    public static readonly List<Bike> SampleBikes =
+    public static readonly List<CreateBikeCommand> SampleBikes =
     [
         new()
         {
@@ -75,34 +70,18 @@ public static class DataFixture
         }
     ];
 
-    private static DateTime timeNow = DateTime.UtcNow;
+    private static readonly DateTime timeStart = DateTime.UtcNow.AddDays(1);
 
-    public static readonly List<Reservation> SampleReservations =
-    [
+    public static readonly CreateReservationCommand SampleReservation =
         new()
         {
-            DateTimeStartInUtc = timeNow,
-            DateTimeEndInUtc = timeNow.AddDays(5),
-            Cost = 5000,
-            Status = "Status",
+            DateTimeStartInUtc = timeStart,
+            NumberOfDays = 5,
             Comments = "Comments",
-            CustomerId = 1
-        }
-    ];
+            CustomerId = 1,
+            BikesIds = new List<int> { 1, 2 }
+        };
 
-    public static readonly List<ReservationBike> SampleReservationBikes =
-        [
-            new()
-            {
-                ReservationId = 1,
-                BikeId = 1
-            },
-            new()
-            {
-                ReservationId = 1,
-                BikeId = 2
-            }
-        ];
 
     public static readonly CreateCustomerCommand CreateTestCustomerData = new()
     {
@@ -136,7 +115,7 @@ public static class DataFixture
 
     public static readonly CreateReservationCommand CreateTestReservationData = new()
     {
-        DateTimeStartInUtc = timeNow.AddYears(10),
+        DateTimeStartInUtc = timeStart.AddYears(10),
         NumberOfDays = 5,
         Comments = "Test comments",
         CustomerId = 2,
