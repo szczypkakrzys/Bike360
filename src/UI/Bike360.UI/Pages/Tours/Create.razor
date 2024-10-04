@@ -1,0 +1,57 @@
+﻿@page "/travelagency/tours/create"
+@using Microsoft.AspNetCore.Components.Forms
+
+<div style="margin: auto">
+    <Title Level="2" Style="margin-left: 5%">Nowa wycieczka</Title>
+    @if (string.IsNullOrEmpty(Message) == false)
+    {
+        <div class="alert alert-danger">
+            @Message
+        </div>
+    }
+     @if (string.IsNullOrEmpty(ValidationErrors) == false)
+    {
+        @ValidationErrors
+    }
+
+
+    <Form Model="@Model"
+        LabelCol="new ColLayoutParam { Span = 5 }"
+        WrapperCol="new ColLayoutParam { Span = 5 }"
+        OnFinish="CreateTour"
+        ValidateOnChange="true">
+
+        <ValidationSummary />
+
+        <FormItem Label="Nazwa">
+            <Input @bind-Value="@Model.Name" />
+        </FormItem>
+        <FormItem Label="Data ropoczęcia">
+            <DatePicker Size="large" Format="dd/MM/yyyy" Mask="dd/MM/yyyy" Placeholder="@("dd/mm/yyyy")" Class="form-control" DefaultValue="DateTime.Today" @bind-Value="@Model.TimeStart" />
+        </FormItem>
+        <FormItem Label="Data zakończenia">
+            <DatePicker Size="large" Format="dd/MM/yyyy" Mask="dd/MM/yyyy" Placeholder="@("dd/mm/yyyy")" Class="form-control" DefaultValue="DateTime.Today" @bind-Value="@Model.TimeEnd" />
+        </FormItem>
+        <FormItem Label="Całkowity koszt">
+            <Input @bind-Value="@Model.EntireCost" />
+        </FormItem>
+        <FormItem Label="Koszt zaliczki">
+            <Input @bind-Value="@Model.AdvancePaymentCost" />
+        </FormItem>
+        <FormItem Label="Termin wpłaty całej kwoty">
+            <DatePicker Size="large" Format="dd/MM/yyyy" Mask="dd/MM/yyyy" Placeholder="@("dd/mm/yyyy")" Class="form-control" DefaultValue="DateTime.Today" @bind-Value="@Model.EntireAmountPaymentDeadline" />
+        </FormItem>
+        <FormItem Label="Termin wpłaty zaliczki">
+            <DatePicker Size="large" Format="dd/MM/yyyy" Mask="dd/MM/yyyy" Placeholder="@("dd/mm/yyyy")" Class="form-control" DefaultValue="DateTime.Today" @bind-Value="@Model.AdvancePaymentDeadline" />
+        </FormItem>
+        <FormItem Label="Status">
+            <Input @bind-Value="@Model.Status" />
+        </FormItem>
+     
+        <FormItem WrapperCol="new ColLayoutParam{ Offset = 5, Span = 16 }">
+            <Button Type="@ButtonType.Primary" HtmlType="submit">
+                Dodaj wycieczkę
+            </Button>
+        </FormItem>
+    </Form>
+</div>

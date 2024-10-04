@@ -1,0 +1,228 @@
+﻿@page "/divingschool/customers/{id:int}/courses"
+
+<h3>Kursy @customer.FirstName @customer.LastName</h3>
+
+@if (string.IsNullOrEmpty(Message) == false)
+{
+    <div class="alert alert-danger">
+        @Message
+    </div>
+}
+
+<div style="font-size: 20px">
+    @if (customerCourses == null)
+    {
+        <p>Ładowanie danych...</p>
+    }
+    else
+    {
+        <Button Type="@ButtonType.Primary" Size="@ButtonSize.Large" OnClick="ToggleCoursesList" Style="margin-bottom: 2%" Icon="caret-right">
+            @AddToCourseActionText
+        </Button>
+        @if (!CoursesListCollapsed)
+        {
+            <div style="background:#ECECEC; padding:30px; margin-bottom: 5%;">
+                <Card Bordered="false" Title=@("Kursy")>
+                    <Body>
+                        @if (Courses == null)
+                        {
+                            <p>Ładowanie danych...</p>
+                        }
+                        else
+                        {
+                            <GridRow>
+                                <GridCol Span="8">
+                                    <Search Placeholder="Wyszukaj" ClassicSearchIcon @bind-Value="AllCoursesSearchText" BindOnInput="true" Size="large" />
+                                 </GridCol>
+                             </GridRow>
+
+                            <table class="table" style="margin-top: 10px">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Nazwa kursu
+                                        </th>
+                                        <th>
+                                            Data rozpoczęcia
+                                        </th>
+                                        <th>
+                                            Data zakończenia
+                                        </th>
+                                        <th>
+                                            Akcje
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach (var course in FilteredAllCoursesList)
+                                    {
+                                        <tr>
+                                            <td>@course.Name</td>
+                                            <td>@course.TimeStart.ToShortDateString()</td>
+                                            <td>@course.TimeEnd.ToShortDateString()</td>
+                                            <td>
+                                                <Button Type="@ButtonType.Primary" Size="@ButtonSize.Large" OnClick="@(()=>{ confirmModalVisible = true; assignCourseId = course.Id; choosenCourseName = course.Name; })">
+                                                    Przypisz uczestnika
+                                                </Button>
+                                                <Button Type="@ButtonType.Default" Size="@ButtonSize.Large" OnClick="@(() => CourseDetails(course.Id))">
+                                                    Szczegóły
+                                                </Button>
+                                            </td>
+                                        </tr>
+
+                                        <Modal Title="Potwierdź przypisanie"
+                                               @bind-Visible="@confirmModalVisible"
+                                               Resizable="@false"
+                                               OnOk="@(() => AssignCustomerToCourseHandler(assignCourseId, customer.Id))"
+                                               OkText="@("Tak, przypisz")"
+                                               CancelText="@("Anuluj")"
+                                               Centered="true">
+                                            <Paragraph>
+                                                Czy na pewno chcesz przypisać klienta do kursu <Text Strong>@choosenCourseName</Text>?
+                                                </Paragraph>
+                                            </Modal>
+                                    }
+                                </tbody>
+
+                            </table>
+                        }
+                    </Body>
+                </Card>
+            </div>
+        }
+
+        @* customer tours list *@
+        if (customerCourses.Count == 0)
+        {
+            <Title Level="4">Ten klient nie jest jeszcze przypisany do żadnego kursu</Title>
+        }
+        else
+        {
+            <GridRow>
+                <GridCol Span="8">
+                    <Search Placeholder="Wyszukaj" ClassicSearchIcon @bind-Value="SearchText" BindOnInput="true" Size="large" />
+                 </GridCol>
+             </GridRow>
+
+
+            <table class="table" style="margin-top: 10px">
+                <thead>
+                    <tr>
+                        <th>
+                            Nazwa kursu
+                        </th>
+                        <th>
+                            Data rozpoczęcia
+                        </th>
+                        <th>
+                            Data zakończenia
+                        </th>
+                        <th>
+                            Akcje
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var course in FilteredCourses)
+                    {
+                        var customerId = customer.Id;
+                        var courseId = course.Id;
+                        <tr>
+                            <td>@course.Name</td>
+                            <td>@course.TimeStart.ToShortDateString()</td>
+                            <td>@course.TimeEnd.ToShortDateString()</td>
+                            <td>
+                                <Button Type="@ButtonType.Primary" Size="@ButtonSize.Large" OnClick="@(()=>{ ShowCustomerCourseDetailsModal(customerId, courseId); modalCourseId = course.Id; modalCourseName = course.Name;})">
+                                    Szczegóły oraz płatności
+                                </Button>
+                                <Popconfirm Placement="@Placement.Top" Title="Czy na pewno chcesz usunąć klienta z tego kursu?" CancelText="Anuluj" OkText="Tak, usuń" OnConfirm="@(() => RemoveFromCourse(customerId, course.Id))">
+                                    <Button Danger Type="@ButtonType.Default" Size="@ButtonSize.Large">
+                                         Usuń z kursu
+                                     </Button>
+                                 </Popconfirm>
+                             </td>
+                         </tr>
+                    }
+                </tbody>
+
+            </table>
+        }
+    }
+
+    <Modal Title="@CustomerCourseDetailsModalName()"
+           @bind-Visible="@customerCourseDetailsModalVisible"
+           Resizable="@false"
+           OkText="@("Ok")"
+           CancelText="@("Anuluj")"
+           Centered="true"
+           OnCancel="ClearCustomerCourseDetails">
+
+        @if (customerCourseDetails == null)
+        {
+            <p>Ładowanie danych...</p>
+        }
+        else
+        {
+            <Descriptions Bordered Layout="@DescriptionsLayout.Horizontal">
+                 <DescriptionsItem Span="3" Title="Data dołączenia">@customerCourseDetails.EnrollmentDate</DescriptionsItem>
+                    @if (customerCourseDetails.AdvancedPaymentLeftToPay != 0)
+                {
+                    <DescriptionsItem Span="3" Title="Pozostało do zapłaty zaliczki">
+                        @customerCourseDetails.AdvancedPaymentLeftToPay zł
+                    </DescriptionsItem>
+                }
+                else
+                {
+                    <DescriptionsItem Span="3" Title="Data wpłaty zaliczki">
+                        @customerCourseDetails.AdvancedPaymentDate
+                    </DescriptionsItem>
+                    <DescriptionsItem Span="3" Title="Status wpłaty zaliczki">
+                        <Icon Type="check-circle" Theme="twotone" TwotoneColor="#52c41a" Height="1.5em" Width="1.5em" /> Opłacono zaliczkę
+                    </DescriptionsItem>
+                }
+
+                @if (customerCourseDetails.EntireCostLeftToPay != 0)
+                {
+                    <DescriptionsItem Span="3" Title="Pozostało do zapłaty">
+                        @customerCourseDetails.EntireCostLeftToPay zł
+                    </DescriptionsItem>
+                }
+                else
+                {
+                    <DescriptionsItem Span="3" Title="Data wpłaty cały kwoty">
+                        @customerCourseDetails.EntireAmountPaymentDate
+                    </DescriptionsItem>
+                    <DescriptionsItem Span="3" Title="Status wpłaty całej kwoty">
+                        <Icon Type="check-circle" Theme="twotone" TwotoneColor="#52c41a" Height="1.5em" Width="1.5em" /> Opłacono całą kwotę
+                    </DescriptionsItem>
+                }
+            </Descriptions>
+
+            @if (customerCourseDetails.EntireCostLeftToPay != 0)
+            {
+                <Button Type="@ButtonType.Primary"
+                        Icon="@IconType.Outline.Plus"
+                        OnClick="ShowPaymentModal"
+                        Style="margin-top: 2%">
+                    Dodaj płatność
+                </Button>
+            }
+        }
+    </Modal>
+
+    @if (customerCourseDetails != null)
+    {
+        <Modal @bind-Visible="@paymentModalVisible"
+               Resizable="@false"
+               OkText="@("Dodaj")"
+               CancelText="@("Anuluj")"
+               OnOk="@(() => AddPayment(customer.Id, modalCourseId, newPaymentValue))"
+               Centered="true">
+            Podaj kwotę wpłaty <AntDesign.InputNumber Step="0.1" Min="0" Max="@customerCourseDetails.EntireCostLeftToPay" @bind-Value="newPaymentValue" /> zł
+        </Modal>
+    }
+
+
+</div>

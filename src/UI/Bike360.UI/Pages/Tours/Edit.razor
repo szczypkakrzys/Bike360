@@ -1,0 +1,55 @@
+﻿@page "/travelagency/tours/edit/{id:int}"
+
+<h3>Edytuj dane wycieczki</h3>
+
+@if (string.IsNullOrEmpty(Message) == false)
+{
+    <div class="alert alert-danger">
+        @Message
+    </div>
+}
+
+@if (Model == null)
+{
+    <p>Ładowanie danych...</p>
+}
+else
+{
+    <Form Model="@Model"
+          LabelCol="new ColLayoutParam { Span = 5 }"
+          WrapperCol="new ColLayoutParam { Span = 5 }"
+          OnFinish="UpdateTour"
+          ValidateOnChange="true">
+
+        <FormItem Label="Nazwa">
+            <Input @bind-Value="@Model.Name" />
+        </FormItem>
+        <FormItem Label="Data ropoczęcia">
+            <DatePicker Size="large" Format="dd/MM/yyyy" Mask="dd/MM/yyyy" Placeholder="@("dd/mm/yyyy")" Class="form-control" DefaultValue="DateTime.Today" @bind-Value="@Model.TimeStart" />
+        </FormItem>
+        <FormItem Label="Data zakończenia">
+            <DatePicker Size="large" Format="dd/MM/yyyy" Mask="dd/MM/yyyy" Placeholder="@("dd/mm/yyyy")" Class="form-control" DefaultValue="DateTime.Today" @bind-Value="@Model.TimeEnd" />
+        </FormItem>
+        <FormItem Label="Całkowity koszt">
+            <Input @bind-Value="@Model.EntireCost" />
+        </FormItem>
+        <FormItem Label="Koszt zaliczki">
+            <Input @bind-Value="@Model.AdvancePaymentCost" />
+        </FormItem>
+        <FormItem Label="Termin wpłaty całej kwoty">
+            <DatePicker Size="large" Format="dd/MM/yyyy" Mask="dd/MM/yyyy" Placeholder="@("dd/mm/yyyy")" Class="form-control" DefaultValue="DateTime.Today" @bind-Value="@Model.EntireAmountPaymentDeadline" />
+        </FormItem>
+        <FormItem Label="Termin wpłaty zaliczki">
+            <DatePicker Size="large" Format="dd/MM/yyyy" Mask="dd/MM/yyyy" Placeholder="@("dd/mm/yyyy")" Class="form-control" DefaultValue="DateTime.Today" @bind-Value="@Model.AdvancePaymentDeadline" />
+        </FormItem>
+        <FormItem Label="Status">
+            <Input @bind-Value="@Model.Status" />
+        </FormItem>
+
+        <FormItem WrapperCol="new ColLayoutParam{ Offset = 5, Span = 16 }">
+            <Button Type="@ButtonType.Primary" HtmlType="submit">
+                Zatwierdź zmiany
+            </Button>
+        </FormItem>
+    </Form>
+}

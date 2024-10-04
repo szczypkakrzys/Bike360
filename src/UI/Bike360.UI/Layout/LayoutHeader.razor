@@ -1,0 +1,75 @@
+﻿
+<Header Class="site-layout-sub-header-background" Style="padding: 0; display: flex; justify-content: flex-end; align-items: center;">
+
+    <Tooltip Placement="@Placement.Bottom" Title="Powiadomienia" Style="margin-right: 2%">
+        <Badge Count="@Notifications.Count">
+            <Icon Type="bell" Theme="twotone" Height="2em" Width="2em" OnClick="OpenNotificationsDrawer"/>
+        </Badge>
+    </Tooltip>
+
+    <Tooltip Placement="@Placement.Bottom" Title="Moje konto" Style="margin-right: 3%">
+        <Icon Type="setting" Theme="twotone" Height="2em" Width="2em" />
+    </Tooltip>
+  
+</Header>
+
+<div>
+    <Drawer Closable="true" @bind-Visible="@showNotifications" Placement="right" Title='("Powiadomienia")' Width="450">
+        <div style="overflow-y: auto;">
+            
+        <table class="table" style="margin-top: 10px">
+
+            <tbody>
+                @foreach (var notification in Notifications)
+                {
+                    <tr>
+
+                        <div style="display: flex; align-items: center;">
+                            <Tooltip Placement="@Placement.Top" Title="Usuń powiadomienie" Style=" margin-right: 10%;">
+                                <Icon Type="check-circle" Theme="twotone" Height="1.5em" Width="1.5em" OnClick="@(() => DeleteNotification(notification.Id))" style="cursor: pointer;" />
+                            </Tooltip>
+
+                            <div style="margin-top: 2%">
+                                <Paragraph>@notification.ViewMessage</Paragraph>
+                                <Text Type="secondary">@notification.Date.ToShortDateString()</Text>
+                            </div>                                
+                        </div>
+
+                        @if(notification.CustomersIdsList != null && notification.CustomersIdsList.Count() > 0)
+                        {
+                            <div @onclick="@(() => SetNotificationCustomersList(notification))">
+                                <Collapse ExpandIcon="caret-right">
+                                        <Panel Header="Lista użytkowników zalegających z płatnościami">
+                                        <ChildContent>
+                                            @{
+                                                @if(notification.Customers.Count == 0)
+                                                {
+                                                    <Paragraph>Ładowanie...</Paragraph>
+                                                }
+                                                else
+                                                {
+                                                    @foreach (var customer in notification.Customers)
+                                                    {
+                                                        <Paragraph>
+                                                            @customer.CustomerFullName: @customer.AmountLeftToPay zł
+                                                        </Paragraph>
+                                                    }
+                                                }
+                                                                                                    
+                                            }   
+                                        </ChildContent>
+                                    </Panel>
+                                </Collapse>
+                            </div>
+                        }
+                        <Divider />
+
+                    </tr>
+           
+                }
+            </tbody>
+
+        </table>     
+        </div>
+    </Drawer>
+</div>   

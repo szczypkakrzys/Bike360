@@ -1,0 +1,43 @@
+﻿@page "/divingschool/courses/details/{id:int}"
+
+<div style="margin: auto; width: 60%">
+
+    <Title Level="2">Dane kursu</Title>
+
+    @if (string.IsNullOrEmpty(Message) == false)
+    {
+        <div class="alert alert-danger">
+            @Message
+        </div>
+    }
+
+    @if (Course == null)
+    {
+        <p>Ładowanie danych...</p>
+    }
+    else
+    {
+        <Descriptions Bordered Layout="@DescriptionsLayout.Horizontal">
+             <DescriptionsItem LabelStyle="width: 30%" Span="3" Title="Nazwa">@course.Name</DescriptionsItem>
+                <DescriptionsItem Span="3" Title="Data rozpoczęcia">@course.TimeStart.ToShortDateString()</DescriptionsItem>
+                <DescriptionsItem Span="3" Title="Data zakończenia">@course.TimeEnd.ToShortDateString()</DescriptionsItem>
+                <DescriptionsItem Span="3" Title="Całkowity koszt">@course.EntireCost</DescriptionsItem>
+                <DescriptionsItem Span="3" Title="Termin wpłaty całej kwoty">@course.EntireAmountPaymentDeadline.ToShortDateString()</DescriptionsItem>
+                <DescriptionsItem Span="3" Title="Koszt zaliczki">@course.AdvancePaymentCost</DescriptionsItem>
+                <DescriptionsItem Span="3" Title="Termin wpłaty zaliczki">@course.AdvancePaymentDeadline.ToShortDateString()</DescriptionsItem>
+            </Descriptions>
+
+        <div style="margin-top: 2%">
+            <Button Type="@ButtonType.Primary" Size="@ButtonSize.Large" OnClick="@(()=>EditCourse(course.Id))">
+                Edytuj
+            </Button>
+
+            <Popconfirm Placement="@Placement.Top" Title="Czy na pewno chcesz usunąć ten kurs?" CancelText="Anuluj" OkText="Tak, usuń" OnConfirm="@(() => DeleteCourse(course.Id))">
+                <Button Danger Type="@ButtonType.Primary" Size="@ButtonSize.Large">
+                     Usuń
+                 </Button>
+             </Popconfirm>
+         </div>
+    }
+</div>
+

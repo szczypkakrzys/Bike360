@@ -1,0 +1,228 @@
+﻿@page "/travelagency/customers/{id:int}/tours"
+
+<h3>Wycieczki @customer.FirstName @customer.LastName</h3>
+
+@if (string.IsNullOrEmpty(Message) == false)
+{
+    <div class="alert alert-danger">
+        @Message
+    </div>
+}
+
+<div style="font-size: 20px">
+@if (customerTours == null)
+{
+    <p>Ładowanie danych...</p>
+}
+else
+{
+    <Button Type="@ButtonType.Primary" Size="@ButtonSize.Large" OnClick="ToggleToursList" Style="margin-bottom: 2%" Icon="caret-right">
+        @AddToTourActionText
+    </Button>
+    @if (!ToursListCollapsed)
+    {
+        <div style="background:#ECECEC; padding:30px; margin-bottom: 5%;">
+            <Card Bordered="false" Title=@("Wycieczki")>
+                <Body>
+                    @if (Tours == null)
+                    {
+                        <p>Ładowanie danych...</p>
+                    }
+                    else
+                    {
+                        <GridRow>
+                            <GridCol Span="8">
+                                <Search Placeholder="Wyszukaj" ClassicSearchIcon @bind-Value="AllToursSearchText" BindOnInput="true" Size="large" />
+                             </GridCol>
+                         </GridRow>
+
+                        <table class="table" style="margin-top: 10px">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Nazwa wycieczki
+                                    </th>
+                                    <th>
+                                        Data rozpoczęcia
+                                    </th>
+                                    <th>
+                                        Data zakończenia
+                                    </th>
+                                    <th>
+                                        Akcje
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var tour in FilteredAllToursList)
+                                {
+                                    <tr>
+                                        <td>@tour.Name</td>
+                                        <td>@tour.TimeStart.ToShortDateString()</td>
+                                        <td>@tour.TimeEnd.ToShortDateString()</td>
+                                        <td>
+                                            <Button Type="@ButtonType.Primary" Size="@ButtonSize.Large" OnClick="@(()=>{ confirmModalVisible = true; assignTourId = tour.Id; choosenTourName = tour.Name; })">
+                                                Przypisz uczestnika
+                                            </Button>
+                                            <Button Type="@ButtonType.Default" Size="@ButtonSize.Large" OnClick="@(() => TourDetails(tour.Id))">
+                                                Szczegóły
+                                            </Button>
+                                        </td>
+                                    </tr>
+
+                                    <Modal Title="Potwierdź przypisanie"
+                                           @bind-Visible="@confirmModalVisible"
+                                           Resizable="@false"
+                                           OnOk="@(() => AssignCustomerToTourHandler(assignTourId, customer.Id))"
+                                           OkText="@("Tak, przypisz")"
+                                           CancelText="@("Anuluj")"
+                                           Centered="true">
+                                        <Paragraph>
+                                            Czy na pewno chcesz przypisać klienta do wycieczki <Text Strong>@choosenTourName</Text>?
+                                            </Paragraph>
+                                        </Modal>
+                                }
+                            </tbody>
+
+                        </table>
+                    }
+                </Body>
+            </Card>
+        </div>
+    }
+
+    @* customer tours list *@
+    if (customerTours.Count == 0)
+    {
+        <Title Level="4">Ten klient nie jest jeszcze przypisany do żadnej wycieczki</Title>
+    }
+    else
+    {
+        <GridRow>
+            <GridCol Span="8">
+                <Search Placeholder="Wyszukaj" ClassicSearchIcon @bind-Value="SearchText" BindOnInput="true" Size="large" />
+             </GridCol>
+         </GridRow>
+
+
+        <table class="table" style="margin-top: 10px">
+            <thead>
+                <tr>
+                    <th>
+                        Nazwa wycieczki
+                    </th>
+                    <th>
+                        Data rozpoczęcia
+                    </th>
+                    <th>
+                        Data zakończenia
+                    </th>
+                    <th>
+                        Akcje
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var tour in FilteredTours)
+                {
+                    var customerId = customer.Id;
+                    var tourId = tour.Id;
+                    <tr>
+                        <td>@tour.Name</td>
+                        <td>@tour.TimeStart.ToShortDateString()</td>
+                        <td>@tour.TimeEnd.ToShortDateString()</td>
+                        <td>
+                            <Button Type="@ButtonType.Primary" Size="@ButtonSize.Large" OnClick="@(()=>{ ShowCustomerTourDetailsModal(customerId, tourId); modalTourId = tour.Id; modalTourName = tour.Name;})">
+                                Szczegóły oraz płatności
+                            </Button>
+                            <Popconfirm Placement="@Placement.Top" Title="Czy na pewno chcesz usunąć klienta z tej wycieczki?" CancelText="Anuluj" OkText="Tak, usuń" OnConfirm="@(() => RemoveFromTour(customerId, tour.Id))">
+                                <Button Danger Type="@ButtonType.Default" Size="@ButtonSize.Large">
+                                     Usuń z wycieczki
+                                 </Button>
+                             </Popconfirm>
+                         </td>
+                     </tr>
+                }
+            </tbody>
+
+        </table>
+    }
+}
+
+<Modal Title="@CustomerTourDetailsModalName()"
+       @bind-Visible="@customerTourDetailsModalVisible"
+       Resizable="@false"
+       OkText="@("Ok")"
+       CancelText="@("Anuluj")"
+       Centered="true"
+       OnCancel="ClearCustomerTourDetails">
+
+    @if (customerTourDetails == null)
+    {
+        <p>Ładowanie danych...</p>
+    }
+    else
+    {
+        <Descriptions Bordered Layout="@DescriptionsLayout.Horizontal">
+             <DescriptionsItem Span="3" Title="Data dołączenia">@customerTourDetails.EnrollmentDate</DescriptionsItem>
+                @if (customerTourDetails.AdvancedPaymentLeftToPay != 0)
+            {
+                <DescriptionsItem Span="3" Title="Pozostało do zapłaty zaliczki">
+                    @customerTourDetails.AdvancedPaymentLeftToPay zł
+                </DescriptionsItem>
+            }
+            else
+            {
+                <DescriptionsItem Span="3" Title="Data wpłaty zaliczki">
+                    @customerTourDetails.AdvancedPaymentDate
+                </DescriptionsItem>
+                <DescriptionsItem Span="3" Title="Status wpłaty zaliczki">
+                    <Icon Type="check-circle" Theme="twotone" TwotoneColor="#52c41a" Height="1.5em" Width="1.5em" /> Opłacono zaliczkę
+                </DescriptionsItem>
+            }
+
+            @if (customerTourDetails.EntireCostLeftToPay != 0)
+            {
+                <DescriptionsItem Span="3" Title="Pozostało do zapłaty">
+                    @customerTourDetails.EntireCostLeftToPay zł
+                </DescriptionsItem>
+            }
+            else
+            {
+                <DescriptionsItem Span="3" Title="Data wpłaty cały kwoty">
+                    @customerTourDetails.EntireAmountPaymentDate
+                </DescriptionsItem>
+                <DescriptionsItem Span="3" Title="Status wpłaty całej kwoty">
+                    <Icon Type="check-circle" Theme="twotone" TwotoneColor="#52c41a" Height="1.5em" Width="1.5em" /> Opłacono całą kwotę
+                </DescriptionsItem>
+            }
+        </Descriptions>
+
+        @if (customerTourDetails.EntireCostLeftToPay != 0)
+        {
+            <Button Type="@ButtonType.Primary"
+                    Icon="@IconType.Outline.Plus"
+                    OnClick="ShowPaymentModal"
+                    Style="margin-top: 2%">
+                Dodaj płatność
+            </Button>
+        }
+    }
+</Modal>
+
+@if (customerTourDetails != null)
+{
+    <Modal @bind-Visible="@paymentModalVisible"
+           Resizable="@false"
+           OkText="@("Dodaj")"
+           CancelText="@("Anuluj")"
+           OnOk="@(() => AddPayment(customer.Id, modalTourId, newPaymentValue))"
+           Centered="true">
+        Podaj kwotę wpłaty <AntDesign.InputNumber Step="0.1" Min="0" Max="@customerTourDetails.EntireCostLeftToPay" @bind-Value="newPaymentValue" /> zł
+    </Modal>
+}
+
+
+</div>

@@ -1,0 +1,35 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.Authorization
+@attribute [AllowAnonymous]
+
+
+<GridRow>
+    <GridCol Span="8" Offset="6">
+        <h3>Zaloguj się</h3>
+        @if (string.IsNullOrEmpty(Message) == false)
+        {
+            <div class="alert alert-danger">
+                @Message
+            </div>
+        }
+        <Form Model="@Model"
+              OnFinish="HandleLogin"
+              ValidateOnChange="true"
+            Style="margin-top: 2%">
+            <FormItem Label="E-mail">
+                <Input @bind-Value="@Model.Email" />
+            </FormItem>
+            <FormItem Label="Hasło">
+                <InputPassword @bind-Value="@Model.Password" />
+            </FormItem>
+            <FormItem>
+                <Button Type="@ButtonType.Primary" HtmlType="submit">
+                    Zaloguj się
+                </Button>
+            </FormItem>
+        </Form>
+    </GridCol>
+</GridRow>
+
+
+

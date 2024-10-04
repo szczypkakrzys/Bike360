@@ -1,0 +1,88 @@
+﻿@page "/divingschool/courses/"
+
+<h3>Kursy nurkowania</h3>
+
+
+@if (string.IsNullOrEmpty(Message) == false)
+{
+    <div class="alert alert-danger">
+        @Message
+    </div>
+}
+
+@if (Courses == null)
+{
+    <p>Ładowanie danych...</p>
+}
+else
+{
+    <GridRow>
+        <GridCol Span="8">
+            <Search Placeholder="Wyszukaj" ClassicSearchIcon @bind-Value="SearchText" BindOnInput="true" Size="large" />
+         </GridCol>
+         <GridCol Span="8">
+             <Button Type="@ButtonType.Primary" Size="@ButtonSize.Large" OnClick="CreateCourse" Style="margin-left: 10%">
+                 Nowy kurs
+             </Button>
+         </GridCol>
+     </GridRow>
+
+
+    <table class="table" style="margin-top: 10px">
+        <thead>
+            <tr>
+                <th>
+                    Nazwa kursu
+                </th>
+                <th>
+                    Data rozpoczęcia
+                </th>
+                <th>
+                    Data zakończenia
+                </th>
+                <th>
+                    Akcje
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var course in FilteredCourses)
+            {
+                <tr>
+                    <td>@course.Name</td>
+                    <td>@course.TimeStart.ToShortDateString()</td>
+                    <td>@course.TimeEnd.ToShortDateString()</td>
+                    <td>
+                        <Button Type="@ButtonType.Primary" Size="@ButtonSize.Large" Icon="caret-right" OnClick="@(() => ToggleParticipantsList(course.Id))">
+                            @GetParticipantsActionText(course.Id)
+                        </Button>
+                        <Button Type="@ButtonType.Default" Size="@ButtonSize.Large" OnClick="@(() => CourseDetails(course.Id))">
+                            Szczegóły
+                        </Button>
+                    </td>
+                </tr>
+
+                @if (!ParticipantsListCollapsedStates[course.Id])
+                {
+                    <tr>
+                        <td colspan="4">
+                            <div style="width: 80%; background:#ECECEC; padding:30px; margin-bottom: 5%; margin:auto">
+                                <Card Bordered="false">
+                                    <Body>
+                                        <CourseParticipants CourseId="course.Id" CourseName="@course.Name"/>
+                                    </Body>
+                                </Card>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+
+    </table>
+}
+
+
+
+

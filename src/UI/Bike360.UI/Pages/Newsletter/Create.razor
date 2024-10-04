@@ -1,0 +1,78 @@
+﻿@page "/newsletter"
+
+<h3>Nowa wiadomość</h3>
+
+    <div>
+        <GridRow Style="margin-top: 2%;">
+            <GridCol Span="12" Push="2">
+            <AutoComplete Options="@options">
+                <AutoCompleteInput Placeholder="Podaj odbiorców wiadomości" @bind-Value="@inputValue" Size="large" @oninput="UpdateEmailList" @onblur="CloseEmailList" />
+            </AutoComplete>
+            </GridCol>
+            <GridCol Span="2" Pull="12" Style="text-align: center; margin-top: auto; margin-bottom: auto">
+                Odbiorcy: 
+            </GridCol>
+        </GridRow>
+    </div>
+<div>
+    <GridRow Style="margin-bottom: 5px">
+        <GridCol Span="12" Push="2">
+            <Input Placeholder="Tytuł wiadomości" @bind-Value="@Subject" Size="large"/>
+        </GridCol>
+        <GridCol Span="2" Pull="12" Style="text-align: center; margin-top: auto; margin-bottom: auto">
+            Temat:
+        </GridCol>
+    </GridRow>
+</div>
+
+<BlazoredTextEditor @ref="@QuillHtml">
+    <ToolbarContent>
+        <select class="ql-header">
+            <option selected=""></option>
+            <option value="1"></option>
+            <option value="2"></option>
+            <option value="3"></option>
+            <option value="4"></option>
+            <option value="5"></option>
+        </select>
+        <span class="ql-formats">
+            <button class="ql-bold"></button>
+            <button class="ql-italic"></button>
+            <button class="ql-underline"></button>
+            <button class="ql-strike"></button>
+        </span>
+        <span class="ql-formats">
+            <select class="ql-color"></select>
+            <select class="ql-background"></select>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-list" value="ordered"></button>
+            <button class="ql-list" value="bullet"></button>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-link"></button>
+        </span>
+    </ToolbarContent>
+    <EditorContent>
+            <h1>Przykładowa wiadomość dla klienta</h1>
+        <img src="https://www.shutterstock.com/image-photo/side-view-medium-fawn-alpaca-600nw-2158343693.jpg" />
+    </EditorContent>
+</BlazoredTextEditor>
+
+<br />
+<Button Type="@ButtonType.Primary" Size="@ButtonSize.Large" OnClick="SendMessage" Icon="send">
+    Wyślij
+</Button>
+<Button Type="@ButtonType.Default" Size="@ButtonSize.Large">
+    Dodaj jako nowy wzór
+</Button>
+
+
+<Modal @bind-Visible="@MessageSuccessModalVisible"
+       Resizable="@false"
+       OkText="@("Ok")"
+       CancelText="@("Wróć")"
+       Centered="true">
+   <Result Status="success"
+            Title="Wiadomość została wysłana" />
+</Modal>
