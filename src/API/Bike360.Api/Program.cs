@@ -2,7 +2,10 @@ using Bike360.Api.Middleware;
 using Bike360.Application;
 using Bike360.Persistence;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
 using Serilog;
+using Swashbuckle.AspNetCore.Filters;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,8 +35,16 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.CustomSchemaIds(type => type.FullName.Replace("+", "."));
+    c.CustomSchemaIds(type => type.FullName!.Replace("+", "."));
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bike360 API", Version = "v1" });
+
+    c.ExampleFilters();
+
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
+
+builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
 
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration)

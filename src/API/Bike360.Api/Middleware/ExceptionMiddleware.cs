@@ -51,7 +51,7 @@ public class ExceptionMiddleware
                 {
                     Title = notFoundException.Message,
                     Status = (int)statusCode,
-                    Type = nameof(BadRequestException),
+                    Type = nameof(NotFoundException),
                     Detail = notFoundException.InnerException?.Message
                 };
                 break;
