@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\API\Bike360.Api\Bike360.Api.csproj" />
+    <ProjectReference Include="..\..\src\API\Bike360.Api\Bike360.Api.csproj" />
   </ItemGroup>
 
 </Project>
