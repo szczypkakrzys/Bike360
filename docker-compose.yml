@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  bike360.api:
+    image: ${DOCKER_REGISTRY-}bike360api
+    container_name: bike360.api
+    build:
+      context: .
+      dockerfile: src/API/Bike360.Api/Dockerfile
+    depends_on: 
+      - bike360.database
+
+  bike360.database:
+    image: mcr.microsoft.com/mssql/server:2022-CU15-GDR1-ubuntu-22.04
+    container_name: bike360.database
+    environment: 
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "StrongP@ssw0rd!"
+    volumes:
+      - bike360-db:/var/opt/mssql
+    ports:
+      - 8002:1433
+
+volumes:
+  bike360-db:
