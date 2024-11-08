@@ -37,6 +37,11 @@ const Navbar = () => {
                   className={ linkClass }
                   >Bikes</NavLink
                 >
+                <NavLink
+                  to="/new-bike"
+                  className={ linkClass }
+                  >Create bike</NavLink
+                >
               </div>
             </div>
           </div>
