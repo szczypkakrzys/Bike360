@@ -2,6 +2,7 @@
 using Bike360.Application.Contracts.Persistence;
 using Bike360.Application.Exceptions;
 using Bike360.Application.Features.Reservations.Constants;
+using Bike360.Application.Features.Reservations.Events;
 using Bike360.Application.Features.Reservations.Services;
 using Bike360.Domain;
 using MediatR;
@@ -17,6 +18,7 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
     private readonly IMapper _mapper;
     private readonly IReservationService _reservationService;
     private readonly ILogger<CreateReservationCommandHandler> _logger;
+    private readonly IMediator _mediator;
 
     public CreateReservationCommandHandler(
         IReservationRepository reservationRepository,
@@ -24,7 +26,8 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
         ICustomerRepository customerRepository,
         IMapper mapper,
         IReservationService reservationService,
-        ILogger<CreateReservationCommandHandler> logger)
+        ILogger<CreateReservationCommandHandler> logger,
+        IMediator mediator)
     {
         _reservationRepository = reservationRepository;
         _bikeRepository = bikeRepository;
@@ -32,6 +35,7 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
         _mapper = mapper;
         _reservationService = reservationService;
         _logger = logger;
+        _mediator = mediator;
     }
 
     public async Task<int> Handle(
@@ -60,6 +64,8 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
             customerData);
 
         await _reservationRepository.CreateAsync(reservationToCreate);
+
+        await _mediator.Publish(_mapper.Map<ReservationCreatedEvent>(reservationToCreate));
 
         return reservationToCreate.Id;
     }

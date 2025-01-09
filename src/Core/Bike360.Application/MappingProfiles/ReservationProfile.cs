@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Bike360.Application.Features.Customers.Queries.GetCustomerReservations;
 using Bike360.Application.Features.Reservations.Commands.CreateReservation;
+using Bike360.Application.Features.Reservations.Events;
 using Bike360.Application.Features.Reservations.Queries.GetReservationDetails;
 using Bike360.Domain;
 
@@ -29,5 +30,8 @@ public class ReservationProfile : Profile
 
         CreateMap<Customer, CustomerDto>();
         CreateMap<Bike, BikeDto>();
+
+        CreateMap<Reservation, ReservationCreatedEvent>();
+        CreateMap<Reservation, ReservationDeletedEvent>();
     }
 }
