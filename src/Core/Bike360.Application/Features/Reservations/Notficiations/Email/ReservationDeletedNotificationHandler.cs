@@ -3,7 +3,7 @@ using Bike360.Application.Features.Reservations.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Bike360.Application.Features.Notficiations;
+namespace Bike360.Application.Features.Reservations.Notficiations.Email;
 
 public class ReservationDeletedNotificationHandler : INotificationHandler<ReservationDeletedEvent>
 {

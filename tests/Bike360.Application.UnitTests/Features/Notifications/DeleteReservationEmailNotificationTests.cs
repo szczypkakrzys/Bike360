@@ -1,6 +1,6 @@
 ﻿using Bike360.Application.Contracts.Email;
-using Bike360.Application.Features.Notficiations;
 using Bike360.Application.Features.Reservations.Events;
+using Bike360.Application.Features.Reservations.Notficiations.Email;
 using Bike360.Domain;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
