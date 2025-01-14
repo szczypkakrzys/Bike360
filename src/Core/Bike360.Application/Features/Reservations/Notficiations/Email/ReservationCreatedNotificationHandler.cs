@@ -22,15 +22,13 @@ public class ReservationCreatedNotificationHandler : INotificationHandler<Reserv
         ReservationCreatedEvent reservation,
         CancellationToken cancellationToken)
     {
-
-        //TODO
-        // add proper e-mail structure
-
         var emailContent = $"Reservation ID: {reservation.Id} has been created for you.";
+        var emailSubject = $"New Reservation {reservation.Id}";
+        var customerFullName = $"{reservation.Customer.FirstName} {reservation.Customer.LastName}";
 
         try
         {
-            await _emailService.Send(emailContent);
+            await _emailService.Send(emailSubject, emailContent, customerFullName, reservation.Customer.EmailAddress);
         }
         catch (Exception ex)
         {

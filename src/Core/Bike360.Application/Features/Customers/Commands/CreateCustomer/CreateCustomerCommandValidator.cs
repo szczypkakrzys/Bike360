@@ -20,7 +20,7 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
         RuleFor(p => p.EmailAddress)
             .NotEmpty()
                 .WithMessage("{PropertyName} is required")
-            .Matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
+            .EmailAddress()
                 .WithMessage("{PropertyValue} is not a valid Email")
             .MustAsync(CustomerEmailUnique)
                 .WithMessage("Customer with given e-mail already exists");
