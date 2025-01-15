@@ -27,7 +27,12 @@ public class CreateReservationEmailNotificationTests
     {
         // Arrange
         var timeStart = DateTime.UtcNow.AddDays(1);
-        var customerData = new Customer();
+        var customerData = new Customer
+        {
+            FirstName = "Arthur",
+            LastName = "Morgan",
+            EmailAddress = "amorgan@wild.west"
+        };
         var bikes = new List<Bike>();
         var reservationCreatedEvent = new ReservationCreatedEvent(
             1,
@@ -39,12 +44,14 @@ public class CreateReservationEmailNotificationTests
             bikes);
 
         var expectedEmailMessage = $"Reservation ID: {reservationCreatedEvent.Id} has been created for you.";
+        var expectedEmailSubject = $"New Reservation {reservationCreatedEvent.Id}";
+        var expectedReceiverName = $"{customerData.FirstName} {customerData.LastName}";
 
         // Act
         await _handler.Handle(reservationCreatedEvent, CancellationToken.None);
 
         // Assert
-        await _emailService.Received(1).Send(expectedEmailMessage);
+        await _emailService.Received(1).Send(expectedEmailSubject, expectedEmailMessage, expectedReceiverName, customerData.EmailAddress);
     }
 
     [Fact]
@@ -63,7 +70,7 @@ public class CreateReservationEmailNotificationTests
             customerData,
             bikes);
 
-        _emailService.Send(Arg.Any<string>()).ThrowsAsync(new Exception());
+        _emailService.Send(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).ThrowsAsync(new Exception());
 
         // Act
         await _handler.Handle(reservationCreatedEvent, CancellationToken.None);

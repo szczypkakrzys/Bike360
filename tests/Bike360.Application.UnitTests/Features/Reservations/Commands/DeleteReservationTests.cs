@@ -73,10 +73,9 @@ public class DeleteReservationTests
         _reservationRepository.GetByIdAsync(reservationId).Returns(reservation);
 
         var timeStart = DateTime.UtcNow.AddDays(1);
-        var customerData = new Customer();
         var expectedNotification = new ReservationDeletedEvent(
             reservationId,
-            customerData,
+            1,
             timeStart,
             timeStart.AddDays(1),
             "Deleted");
