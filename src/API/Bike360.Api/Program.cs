@@ -1,5 +1,6 @@
 using Bike360.Api.Middleware;
 using Bike360.Application;
+using Bike360.Infrastructure;
 using Bike360.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -12,8 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddApplicationServices();
-// TODO - commented out as it is not currently in use
-//builder.Services.AddInfrastructureServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddPersistenceServices(builder.Configuration);
 
 builder.Services.AddControllers();

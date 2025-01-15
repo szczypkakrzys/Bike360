@@ -1,16 +1,20 @@
-﻿namespace Bike360.Infrastructure;
+﻿using Bike360.Application.Contracts.Email;
+using Bike360.Application.Models;
+using Bike360.Infrastructure.Email;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Bike360.Infrastructure;
 
 public static class InfrastructureServicesRegistration
 {
-    // TODO
-    // commented out as it is not currently in use
+    public static IServiceCollection AddInfrastructureServices(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddScoped<IEmailService, EmailService>();
+        services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
 
-    //public static IServiceCollection AddInfrastructureServices(
-    //    this IServiceCollection services,
-    //    IConfiguration configuration)
-    //{
-    //    services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
-
-    //    return services;
-    //}
+        return services;
+    }
 }

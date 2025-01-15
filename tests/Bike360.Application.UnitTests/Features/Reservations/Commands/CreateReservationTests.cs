@@ -2,13 +2,16 @@
 using Bike360.Application.Contracts.Persistence;
 using Bike360.Application.Exceptions;
 using Bike360.Application.Features.Reservations.Commands.CreateReservation;
+using Bike360.Application.Features.Reservations.Events;
 using Bike360.Application.Features.Reservations.Results;
 using Bike360.Application.Features.Reservations.Services;
 using Bike360.Domain;
 using FluentAssertions;
 using FluentValidation.TestHelper;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
+using NSubstitute.ReceivedExtensions;
 using NSubstitute.ReturnsExtensions;
 
 namespace Bike360.Application.UnitTests.Features.Reservations.Commands;
@@ -21,6 +24,7 @@ public class CreateReservationTests
     private readonly IBikeRepository _bikeRepository;
     private readonly IReservationService _reservationService;
     private readonly ILogger<CreateReservationCommandHandler> _logger;
+    private readonly IMediator _mediator;
     private readonly CreateReservationCommandHandler _handler;
     private readonly CreateReservationCommandValidator _validator;
 
@@ -32,7 +36,8 @@ public class CreateReservationTests
         _bikeRepository = Substitute.For<IBikeRepository>();
         _reservationService = Substitute.For<IReservationService>();
         _logger = Substitute.For<ILogger<CreateReservationCommandHandler>>();
-        _handler = new CreateReservationCommandHandler(_reservationRepository, _bikeRepository, _customerRepository, _mapper, _reservationService, _logger);
+        _mediator = Substitute.For<IMediator>();
+        _handler = new CreateReservationCommandHandler(_reservationRepository, _bikeRepository, _customerRepository, _mapper, _reservationService, _logger, _mediator);
         _validator = new CreateReservationCommandValidator();
     }
 
@@ -232,5 +237,52 @@ public class CreateReservationTests
 
         result.ShouldHaveValidationErrorFor(request => request.DateTimeStartInUtc)
             .WithErrorMessage("Start time must be after current time.");
+    }
+
+    [Fact]
+    public async Task Handle_ValidRequest_PublishCustomerNotification()
+    {
+        // Arrange
+        var reservationId = 1;
+        var reservationToCreate = new Reservation { Id = reservationId };
+
+        var request = new CreateReservationCommand
+        {
+            DateTimeStartInUtc = DateTime.Now.AddDays(1),
+            NumberOfDays = 1,
+            Comments = "Reservation comments",
+            CustomerId = 1,
+            BikesIds = [1, 2, 3]
+        };
+
+        var customer = new Customer { Id = request.CustomerId };
+        _customerRepository.GetByIdAsync(request.CustomerId).Returns(customer);
+
+        var reservationBikes = new List<Bike> { new(), new(), new() };
+        _bikeRepository.GetByIdsAsync(request.BikesIds).Returns(reservationBikes);
+
+        var successResult = new AvailabilityResult { AreAvailable = true, ErrorMessage = string.Empty };
+        _reservationService.CheckBikesAvailability(request.BikesIds, request.DateTimeStartInUtc, request.DateTimeStartInUtc.AddDays(request.NumberOfDays)).Returns(successResult);
+
+        _mapper.Map<Reservation>(request).Returns(reservationToCreate);
+        _reservationRepository.CreateAsync(reservationToCreate).Returns(Task.CompletedTask);
+
+        var bikesList = new List<Bike>();
+        var expectedNotification = new ReservationCreatedEvent(
+            reservationId,
+            request.DateTimeStartInUtc,
+            request.DateTimeStartInUtc.AddDays(request.NumberOfDays),
+            200,
+            "Status",
+            customer,
+            bikesList,
+            request.Comments);
+        _mapper.Map<ReservationCreatedEvent>(reservationToCreate).Returns(expectedNotification);
+
+        // Act
+        await _handler.Handle(request, CancellationToken.None);
+
+        // Assert
+        await _mediator.ReceivedWithAnyArgs(1).Publish(expectedNotification);
     }
 }

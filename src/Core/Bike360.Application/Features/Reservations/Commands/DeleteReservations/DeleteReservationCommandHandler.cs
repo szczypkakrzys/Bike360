@@ -1,5 +1,7 @@
-﻿using Bike360.Application.Contracts.Persistence;
+﻿using AutoMapper;
+using Bike360.Application.Contracts.Persistence;
 using Bike360.Application.Exceptions;
+using Bike360.Application.Features.Reservations.Events;
 using Bike360.Domain;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -10,13 +12,19 @@ public class DeleteReservationCommandHandler : IRequestHandler<DeleteReservation
 {
     private readonly IReservationRepository _reservationRepository;
     private readonly ILogger<DeleteReservationCommandHandler> _logger;
+    private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
 
     public DeleteReservationCommandHandler(
         IReservationRepository reservationRepository,
-        ILogger<DeleteReservationCommandHandler> logger)
+        ILogger<DeleteReservationCommandHandler> logger,
+        IMediator mediator,
+        IMapper mapper)
     {
         _reservationRepository = reservationRepository;
         _logger = logger;
+        _mediator = mediator;
+        _mapper = mapper;
     }
 
     public async Task<Unit> Handle(
@@ -29,6 +37,8 @@ public class DeleteReservationCommandHandler : IRequestHandler<DeleteReservation
             throw new NotFoundException(nameof(Reservation), request.Id);
 
         await _reservationRepository.DeleteAsync(reservationToDelete);
+
+        await _mediator.Publish(_mapper.Map<ReservationDeletedEvent>(reservationToDelete));
 
         return Unit.Value;
     }
